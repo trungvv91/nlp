@@ -1,0 +1,6 @@
+bị V
+ốm A
+. .
+Bệnh_nhân Np
+Vũ_Dư Np
+nhập_viện V

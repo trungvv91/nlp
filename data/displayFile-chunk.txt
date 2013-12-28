@@ -1,0 +1,7 @@
+bị	V	B-VP
+ốm	A	B-AP
+.	.	O
+Bệnh_nhân	Np	B-NP
+Vũ_Dư	Np	I-NP
+nhập_viện	V	B-VP
+

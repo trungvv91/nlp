@@ -1,0 +1,16 @@
+Bệnh_nhân	N	B-NP
+Vũ_Dư	Np	I-NP
+dùng	V	B-VP
+thuốc	N	B-NP
+Biseptol	Np	I-NP
+.	.	I-NP
+Ông	N	I-NP
+ấy	Np	I-NP
+bị	V	B-VP
+biến_chứng	V	I-VP
+nặng	A	B-AP
+.	.	O
+Thật	Np	B-NP
+không	R	B-VP
+?	?	O
+

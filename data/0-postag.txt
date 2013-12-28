@@ -1,0 +1,15 @@
+Bệnh_nhân N
+Vũ_Dư Np
+dùng V
+thuốc N
+Biseptol Np
+. .
+Ông N
+ấy Np
+bị V
+biến_chứng V
+nặng A
+. .
+Thật Np
+không R
+? ?
