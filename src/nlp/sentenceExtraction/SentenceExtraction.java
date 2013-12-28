@@ -147,6 +147,7 @@ public class SentenceExtraction {
 
 //        SentenceRedundancing(datums);
 
+        /// Set mapSenOrderByScore
         System.out.println("Start of sen-scoring");
         double[] senScore = new double[numOfSen];
         int[] senIndex = new int[numOfSen];
@@ -163,7 +164,23 @@ public class SentenceExtraction {
             }
             senScore[i] = tf / (double) numOfPhr_i;       /// ???
         }
-        QuickSort.QuickSortFunction(senScore, senIndex, 0, numOfSen - 1);
+        QuickSort.QuickSortFunction(senScore, senIndex, 0, numOfSen - 1);        
+        int remainSen = (int) (2 * numOfSen / 3);
+        int[] topSenIndex = new int[remainSen];
+        int[] topSenIndexTmp = new int[remainSen];
+        System.arraycopy(senIndex, 0, topSenIndex, 0, remainSen);
+        System.arraycopy(topSenIndex, 0, topSenIndexTmp, 0, remainSen);
+        QuickSort.QuickSortFunction(topSenIndexTmp, 0, remainSen - 1);
+        for (int i = 0; i < topSenIndexTmp.length; i++) {
+            for (int j = 0; j < topSenIndex.length; j++) {
+                if (topSenIndexTmp[i] == topSenIndex[j]) {
+                    topSenIndex[j] = i;     /// update sentence index
+                }
+            }
+        }
+        for (int i = 0; i < topSenIndex.length; i++) {
+            mapSenOrderByScore.put(topSenIndex[i], i);
+        }
         System.out.println("End of sen-scoring...");
 
 // <editor-fold defaultstate="collapsed" desc="Đoạn này không hiểu để làm gì">
@@ -184,33 +201,12 @@ public class SentenceExtraction {
 //        }
 // </editor-fold>
 
-        // Remove unimportant sentences.
-        int remainSen = (int) (2 * numOfSen / 3);
+        // Remove unimportant sentences        
         for (int i = remainSen; i < senIndex.length; i++) {
             sentences.remove(senIndex[i]);
         }
 //        System.out.println(remainSen + " sentences remain");
         
-        /// Set mapSenOrderByScore
-        System.out.println("Start of relevance...");
-        int[] topSenIndex = new int[remainSen];
-        int[] topSenIndexTmp = new int[remainSen];
-        System.arraycopy(senIndex, 0, topSenIndex, 0, remainSen);
-        QuickSort.QuickSortFunction(topSenIndex, 0, remainSen - 1);
-        System.arraycopy(topSenIndex, 0, topSenIndexTmp, 0, remainSen);
-        for (int i = 0; i < topSenIndexTmp.length; i++) {
-            int tmp = topSenIndexTmp[i];
-            for (int j = 0; j < topSenIndex.length; j++) {
-                if (tmp == topSenIndex[j]) {
-                    topSenIndex[j] = i;
-                }
-            }
-        }
-        for (int i = 0; i < topSenIndex.length; i++) {
-            mapSenOrderByScore.put(topSenIndex[i], i);
-        }
-        System.out.println("End of relevance...");
-
         return DatumUtil.SentenceToDatum(sentences);
     }
 
