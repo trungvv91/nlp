@@ -4,6 +4,8 @@
  */
 package nlp.sentenceExtraction;
 
+import java.util.Objects;
+
 /**
  *
  * @author Manh Tien
@@ -11,73 +13,65 @@ package nlp.sentenceExtraction;
 public class Datum {
 
     /**
-     * position of datum in sentence
+     * the position of sentence containing Datum
      */
-    public int position;
+    public int iSentence;
+    /**
+     * the position of phrase in sentence containing Datum
+     */
+    public int iPhrase;
     public String word;
     public String posTag;
     public String chunk;
     /**
      * tf-idf score
      */
-    public double score;
     public int tf;
     public double idf;
-    /**
-     * the position of sentence containing Datum
-     */
-    public int sentence;
-    /**
-     * the position of phrase in sentence containing Datum
-     */
-    public int phrase = -1;
-    public boolean topScore = false;
+    public double score;
     public boolean stopWord = false;
     public boolean semiStopWord = false;
     public boolean importance = false;
-    public String predictedLabel;
 
     public Datum(String word, String posTag) {
         this.word = word;
         this.posTag = posTag;
         tf = 0;
         idf = 0;
+        iPhrase = -1;
     }
 
     public String toString() {
-        String str = word + " " + posTag + " " + chunk + " " + position + " " + sentence;
-        return str;
+        return word + " " + posTag + " " + chunk + " " + iSentence;
     }
 
-    public int getPosition() {
-        return position;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Datum other = (Datum) obj;
+        if (!Objects.equals(this.word.toLowerCase(), other.word.toLowerCase())) {
+            return false;
+        }
+        if (!Objects.equals(this.posTag, other.posTag)) {
+            return false;
+        }
+        return true;
     }
 
-    public String getLabel() {
-        return posTag;
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.word.toLowerCase());
+        hash = 83 * hash + Objects.hashCode(this.posTag);
+        return hash;
     }
 
-    public String getPosTag() {
-        return posTag;
-    }
-
-    public void setPosition(int pos) {
-        this.position = pos;
-    }
-
-    public void setPosTag(String posTag) {
-        this.posTag = posTag;
-    }
-
-    public void setLabel(String label) {
-        this.posTag = label;
-    }
-
-    public String getWord() {
-        return word;
-    }
-
-    public void setWord(String word) {
-        this.word = word;
+    public static void main(String[] args) {
+        Datum d1 = new Datum("hello", "V");
+        Datum d2 = new Datum("Hello", "V");
+        System.out.println(d1.equals(d2));
     }
 }

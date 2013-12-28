@@ -16,14 +16,14 @@ public class Synonym {
     public static Map<String, String> synonymMap = new HashMap<>();
 
     public static boolean checkSynonum(String str) {
-        if (synonymMap.containsKey(str) == true) {
+        if (synonymMap.containsKey(str.toLowerCase()) == true) {
             return true;
         }
         return false;
     }
 
     public static String[] synonym(String str) {
-        String tmp = synonymMap.get(str);
+        String tmp = synonymMap.get(str.toLowerCase());
         String[] array = tmp.split("\\,");
         return array;
     }

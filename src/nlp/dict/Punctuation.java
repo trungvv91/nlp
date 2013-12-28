@@ -13,14 +13,13 @@ public class Punctuation {
     
     public static boolean checkPuctuation(String s)
     {        
-        int i = -1;
         String s1 = s.toLowerCase();
-        for (i = 0; i < PUNCTUATIONS.length; i++) {
+        for (int i = 0; i < PUNCTUATIONS.length; i++) {
             if (s1.equals(PUNCTUATIONS[i])) {
-                break;
+                return true;
             }            
         }
-        return (i >= 0);
+        return false;
     }
     
     public static boolean isEndOfSentence(String s) {

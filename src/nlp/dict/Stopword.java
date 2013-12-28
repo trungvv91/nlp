@@ -599,14 +599,13 @@ public class Stopword {
     public static boolean checkStopWord(String s) {
 //        int index = Arrays.binarySearch(STOPWORDS, s);
 //        return (index >= 0);
-        int i = -1;
         String s1 = s.toLowerCase();
-        for (i = 0; i < STOPWORDS.length; i++) {
+        for (int i = 0; i < STOPWORDS.length; i++) {
             if (s1.equals(STOPWORDS[i])) {
-                break;
+                return true;
             }
         }
-        return (i >= 0);
+        return false;
     }
 
     public ArrayList<String> getStopWordList() {

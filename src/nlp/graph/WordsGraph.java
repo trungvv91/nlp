@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import nlp.dict.Conjunction;
+import nlp.sentenceExtraction.DatumUtil;
 import nlp.sentenceExtraction.SentenceExtraction;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -24,9 +25,7 @@ import org.apache.commons.lang3.text.WordUtils;
  */
 public class WordsGraph {
 
-    public long numOfDocuments = 0;
-    public SentenceExtraction extract = new SentenceExtraction();
-    public List<Datum> datums = new ArrayList<>();
+    public List<Datum> datums;
     public Conjunction conj = new Conjunction();
     public String outString = "";
 
@@ -46,7 +45,7 @@ public class WordsGraph {
                 }
             }
             if (contain == false) {
-                vertex.add(d);      /// delete unsplitable phrase, check stop word ???
+                vertex.add(d);      /// delete unsplitable iPhrase, check stop word ???
             }
         }
         double Value[] = new double[vertex.size()];
@@ -75,36 +74,14 @@ public class WordsGraph {
         System.out.println("End word-importance set...");
     }
     
-    /**
-     * Extract datums list to sentence list
-     * @param datums
-     * @return List of sentences, each sentence is a list of datums
-     */
-    private List<List<Datum>> datumsToSentences(List<Datum> datums) {
-        // number of sentences in datums
-        int numOfSen = datums.get(datums.size() - 1).sentence + 1;
-        List<List<Datum>> sens = new LinkedList<>();
-        int counter = 0;
-        for (int i = 0; i < numOfSen; i++) {
-            List<Datum> sen = new ArrayList<>();
-            /// Trung edit 12142013
-            for (;counter < datums.size() && datums.get(counter).sentence == i; counter++) {
-                sen.add(datums.get(counter));
-            }
-            sens.add(sen);
-            /// end Trung edit 12142013
-        }
-        return sens;
-    }
-
     public void mainWordGraph(String inputNum, List<Datum> dts, int wordMax) throws IOException {
         Synonym.initSynonymMap();
-        extract.ExtractSentences(inputNum, dts);
+        datums = SentenceExtraction.ExtractSentences(inputNum, dts);
 
         //Lay 15% so tu la importance words
         setWordImportance(datums, datums.size() * 15 / 100);
 
-        List<List<Datum>> sens = datumsToSentences(datums);
+        ArrayList<ArrayList<Datum>> sens = DatumUtil.DatumToSentence(datums);
 
         /// xét 2 câu liên tiếp --> tìm co-ref, xử lý
         List<Integer> senBeDelete = new ArrayList<>();
@@ -118,12 +95,12 @@ public class WordsGraph {
                 Datum di = seni.get(k);
                 String wi = di.word;
                 String posi = di.posTag;
-                int chunki = di.phrase;
+                int chunki = di.iPhrase;
                 for (int h = 0; h < senj.size(); h++) {
                     Datum dj = senj.get(h);
                     String wj = dj.word;
                     String posj = dj.posTag;
-                    int chunkj = dj.phrase;
+                    int chunkj = dj.iPhrase;
 
                     /// co-ref là N or Np ??? 
                     if (wi.equals(wj) && posi.equals(posj) && (posi.equals("N") || posi.equals("Np"))) {
@@ -132,15 +109,15 @@ public class WordsGraph {
                         int endChunki = k;
                         int endChunkj = h;
 
-                        /// tim phrase cua di va dj
+                        /// tim iPhrase cua di va dj
                         for (Datum d : seni) {
-                            if (d.phrase == chunki && !d.equals(di)) {
+                            if (d.iPhrase == chunki && !d.equals(di)) {
                                 phrasei += d.word + " ";
                                 endChunki++;
                             }
                         }
                         for (Datum d : senj) {
-                            if (d.phrase == chunkj && !d.equals(dj)) {
+                            if (d.iPhrase == chunkj && !d.equals(dj)) {
                                 phrasej += d.word + " ";
                                 endChunkj++;
                             }
@@ -187,7 +164,7 @@ public class WordsGraph {
             }
         }
 
-        /// tạo nút chung trên graph | sentence combination ???
+        /// tạo nút chung trên graph | iSentence combination ???
         for (List<Datum> sen : sens) {
             int i = sens.indexOf(sen);
             //ghep 2 cau neu trung Subject hoac Verb
@@ -211,18 +188,18 @@ public class WordsGraph {
                     }
                 }
                 for (Datum di : sen) {
-                    if (di.phrase == sen.get(0).phrase) {
+                    if (di.iPhrase == sen.get(0).iPhrase) {
                         subjecti += di.word + " ";
                     }
-                    if (indexVerbi > -1 && di.phrase == sen.get(indexVerbi).phrase) {
+                    if (indexVerbi > -1 && di.iPhrase == sen.get(indexVerbi).iPhrase) {
                         verbi += di.word + " ";
                     }
                 }
                 for (Datum dj : sens.get(i + 1)) {
-                    if (dj.phrase == sens.get(i + 1).get(0).phrase) {
+                    if (dj.iPhrase == sens.get(i + 1).get(0).iPhrase) {
                         subjectj += dj.word + " ";
                     }
-                    if (indexVerbj > -1 && dj.phrase == sens.get(i + 1).get(indexVerbj).phrase) {
+                    if (indexVerbj > -1 && dj.iPhrase == sens.get(i + 1).get(indexVerbj).iPhrase) {
                         verbj += dj.word + " ";
                     }
                 }
@@ -257,14 +234,14 @@ public class WordsGraph {
                     int endSubjecti = 0;
                     for (int k = sen.size() - 1; k >= 0; k--) {
                         Datum di = sen.get(k);
-                        if (di.phrase == sen.get(0).phrase) {
+                        if (di.iPhrase == sen.get(0).iPhrase) {
                             endSubjecti = k;
                             break;
                         }
                     }
                     sen.add(endSubjecti, dt);
                     for (Datum dj : sens.get(i + 1)) {
-                        if (dj.phrase == sens.get(i + 1).get(0).phrase) {
+                        if (dj.iPhrase == sens.get(i + 1).get(0).iPhrase) {
                             sen.add(endSubjecti + 1, dj);
                         }
                     }
@@ -291,9 +268,9 @@ public class WordsGraph {
             for (int i = 0; i < sen.size() - 1; i++) {
                 Datum di = sen.get(i);
                 if (di.importance == true) {
-                    int iphrase = di.phrase;
+                    int iphrase = di.iPhrase;
                     for (Datum d : sen) {
-                        if (d.phrase == iphrase) {
+                        if (d.iPhrase == iphrase) {
                             index[0] = sen.indexOf(d);
                             break;
                         }
@@ -304,9 +281,9 @@ public class WordsGraph {
                             Datum dj = sen.get(j);
                             if (dj.importance == true) {
                                 index[1] = j;
-                                int phrase = dj.phrase;
+                                int phrase = dj.iPhrase;
                                 for (int k = sen.size() - 1; k >= j; k--) {
-                                    if (sen.get(k).phrase == phrase) {
+                                    if (sen.get(k).iPhrase == phrase) {
                                         index[1] = k;
                                         break;
                                     }
@@ -356,10 +333,10 @@ public class WordsGraph {
                 //Kiem tra ket thuc la NP
                 if ((sen.get(jIndex).chunk.equals("B-NP") || sen.get(jIndex).chunk.equals("I-NP")) && jIndex < sen.size() - 1) {
                     if (sen.get(jIndex + 1).posTag.equals("V")) {
-                        int phrase = sen.get(jIndex + 1).phrase;
+                        int phrase = sen.get(jIndex + 1).iPhrase;
                         int count = 0;
                         for (Datum d : sen) {
-                            if (d.phrase == phrase) {
+                            if (d.iPhrase == phrase) {
                                 count++;
                             }
                         }
@@ -373,20 +350,20 @@ public class WordsGraph {
                 //Kiem tra ket thuc la V
                 if (sen.get(jIndex).posTag.equals("V") && jIndex < sen.size() - 1) {
                     if (sen.get(jIndex + 1).chunk.equals("B-NP")) {
-                        int phrase = sen.get(jIndex + 1).phrase;
+                        int phrase = sen.get(jIndex + 1).iPhrase;
                         int count = 0;
                         for (Datum d : sen) {
-                            if (d.phrase == phrase) {
+                            if (d.iPhrase == phrase) {
                                 count++;
                             }
                         }
                         jIndex = jIndex + count;
                         termIndex.get(senIndex)[1] = jIndex;
                         if (sen.get(jIndex + 1).chunk.equals("B-VP") && jIndex < sen.size() - 1) {
-                            int phrase1 = sen.get(jIndex + 1).phrase;
+                            int phrase1 = sen.get(jIndex + 1).iPhrase;
                             int count1 = 0;
                             for (Datum d : sen) {
-                                if (d.phrase == phrase1) {
+                                if (d.iPhrase == phrase1) {
                                     count1++;
                                 }
                             }
@@ -549,7 +526,6 @@ public class WordsGraph {
         int numOfWords = 0;
         Set<Integer> senExclude = new HashSet<>();
         boolean is120Words = false;
-        Map<Integer, Integer> mapSenOrderByScore = extract.mapSenOrderByScore;
         int count = 1;
         while (is120Words == false) {
             int words = 0;
@@ -564,7 +540,7 @@ public class WordsGraph {
                 }
             }
             if (words > wordMax) {
-                senExclude.add(mapSenOrderByScore.get(sizeOfSens - count));
+                senExclude.add(SentenceExtraction.mapSenOrderByScore.get(sizeOfSens - count));
                 count++;
             } else {
                 is120Words = true;
@@ -573,7 +549,7 @@ public class WordsGraph {
 
         /// Done, decoration
         for (List<Datum> sen : sens) {
-            //Capitalize the first word in a sentence
+            //Capitalize the first word in a iSentence
             if (!senExclude.contains(sens.indexOf(sen))) {
                 int senIndex = sens.indexOf(sen);
                 if (termIndex.get(senIndex)[0] != null && termIndex.get(senIndex)[1] != null) {

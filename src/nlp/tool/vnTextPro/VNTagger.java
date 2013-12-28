@@ -107,35 +107,39 @@ public class VNTagger {
         List<Datum> datums = new ArrayList<>();
         int nLines = lines.size();
         int sentenceCounter = 0;
+        int phrase = -1;         // set iphrase of a word
+
         for (int i = 0; i < nLines; i++) {
 //            System.out.println("old: " + datums.get(i).tf);
             String word = lines.get(i);
             String[] w = word.split("\\s");
             Datum d = new Datum(w[0], w[1]);
+            d.iSentence = sentenceCounter;
             d.chunk = w[2];
-            d.sentence = sentenceCounter;
-            d.position = i;
-            datums.add(d);
-//            wordlist.add(d.word);
-
+            if (d.chunk.contains("B-")) {
+                phrase++;
+            }
+            d.iPhrase = phrase;
             if (Stopword.checkStopWord(w[0]) && !"Np".equals(d.posTag)) {
                 d.stopWord = true;
             }
-            if (Punctuation.isEndOfSentence(d.posTag)) {
+            if (Punctuation.isEndOfSentence(d.word)) {
                 sentenceCounter++;
+                phrase = -1;
             } else if (d.posTag.equals("E") || d.posTag.equals("M") || d.word.toLowerCase().equals("không")) {
                 d.semiStopWord = true;
             }
-            if (Punctuation.checkPuctuation(d.posTag)) {
-                d.chunk = "O";      /// dấu câu
-            }
 
-            int index = datums.indexOf(d);
-            if (index > 0 && "O".equals(datums.get(index - 1).chunk)) {
-                d.chunk.replace("I", "B");      /// continue -->begin nếu trước đó là dấu câu
+            if (Punctuation.checkPuctuation(d.word)) {
+                d.chunk = "O";      /// dấu câu
+                if (i < nLines - 1) {
+                    lines.set(i+1, lines.get(i+1).replace("I-", "B-"));      /// continue --> begin nếu trước đó là dấu câu
+                }
             }
 //            System.out.println("old: " + datums.get(i).posTag + " vs. new: " + d.posTag);
 //            datums.set(i, d);
+
+            datums.add(d);
         }
 
         /// Calculate tf-idf score
@@ -161,7 +165,7 @@ public class VNTagger {
             di.score = di.idf * di.tf;
         }
         System.out.println("End of idf-scoring...");
-        
+
         return datums;
     }
 

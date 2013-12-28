@@ -85,28 +85,24 @@ public class NounAnaphora {
     {               
 //        int index = Arrays.binarySearch(NA1, s);
 //        return (index >= 0);
-        int i = -1;
         String s1 = s.toLowerCase();
-        for (i = 0; i < NA1.length; i++) {
+        for (int i = 0; i < NA1.length; i++) {
             if (s1.equals(NA1[i])) {
-                break;
+                return true;
             }            
         }
-        return (i >= 0);
+        return false;
     }
     
     public static boolean checkNounAnophoric2(String s)
     {               
-//        int index = Arrays.binarySearch(NA2, s);
-//        return (index >= 0);
-        int i = -1;
         String s1 = s.toLowerCase();
-        for (i = 0; i < NA2.length; i++) {
+        for (int i = 0; i < NA2.length; i++) {
             if (s1.equals(NA2[i])) {
-                break;
+                return true;
             }            
         }
-        return (i >= 0);
+        return false;
     }
     
     public ArrayList<String> getAnophoricList1() {
