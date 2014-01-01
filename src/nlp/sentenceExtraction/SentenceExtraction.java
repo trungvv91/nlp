@@ -125,7 +125,7 @@ public class SentenceExtraction {
         if (!senRedun.equals("")) {
             String[] arrRedun = senRedun.split(":");
             for (int i = 0; i < arrRedun.length; i++) {
-                sentenceArray.remove(Integer.parseInt(arrRedun[i]));
+                sentenceArray.remove(Integer.parseInt(arrRedun[i]) - i);
             }
         }
 //        System.out.println(datums.size());
@@ -133,7 +133,7 @@ public class SentenceExtraction {
     }
 
     /**
-     * Set properties for datum in datums list
+     * Setup mapSenOrderByScore, keep only 2/3 important sentences
      * @param inputNum - file name number
      * @param datums
      * @return tagged datums list
@@ -162,9 +162,9 @@ public class SentenceExtraction {
                     tf += dt.tf;
                 }
             }
-            senScore[i] = tf / (double) numOfPhr_i;       /// ???
+            senScore[i] = tf / (double) numOfPhr_i;
         }
-        QuickSort.QuickSortFunction(senScore, senIndex, 0, numOfSen - 1);        
+        QuickSort.QuickSortFunction(senScore, senIndex, 0, numOfSen - 1);
         int remainSen = (int) (2 * numOfSen / 3);
         int[] topSenIndex = new int[remainSen];
         int[] topSenIndexTmp = new int[remainSen];
@@ -174,7 +174,7 @@ public class SentenceExtraction {
         for (int i = 0; i < topSenIndexTmp.length; i++) {
             for (int j = 0; j < topSenIndex.length; j++) {
                 if (topSenIndexTmp[i] == topSenIndex[j]) {
-                    topSenIndex[j] = i;     /// update sentence index
+                    topSenIndex[j] = i;     /// update sentence index after removing
                 }
             }
         }
@@ -203,10 +203,10 @@ public class SentenceExtraction {
 
         // Remove unimportant sentences        
         for (int i = remainSen; i < senIndex.length; i++) {
-            sentences.remove(senIndex[i]);
+            sentences.remove(senIndex[i] - (i - remainSen));
         }
 //        System.out.println(remainSen + " sentences remain");
-        
+
         return DatumUtil.SentenceToDatum(sentences);
     }
 

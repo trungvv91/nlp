@@ -33,12 +33,10 @@ public class Main {
                         WordsGraph graph = new WordsGraph();
                         VNTagger tagger = VNTagger.getInstance();
                         List<Datum> datums = tagger.tagger(inputNum);
-                        try {
-                            graph.mainWordGraph(inputNum, datums, 120);
-                        } catch (Exception e) {
-                            System.out.println("Error: " + e);
-                        }
+                        graph.mainWordGraph(inputNum, datums, 120);
+
                     } catch (Exception e) {
+                        System.out.println("Error: " + e);
                     }
                 }
             }

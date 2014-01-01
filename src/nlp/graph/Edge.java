@@ -9,9 +9,13 @@ package nlp.graph;
  * @author Manh Tien
  */
 public class Edge {
+
     public final Vertex target;
     public double weight;
     public int frequency;
-    public Edge(Vertex argTarget, double argWeight)
-    { target = argTarget; weight = argWeight; }
+
+    public Edge(Vertex argTarget, double argWeight) {
+        target = argTarget;
+        weight = argWeight;
+    }
 }

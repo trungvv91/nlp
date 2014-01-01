@@ -79,7 +79,7 @@ public class VNTagger {
         }
         str = str.replace(".  .  .", "...");
 //        System.out.println(str);
-        String strPos = tag(str).substring(4).replace(" ", "\n").replace("/", " ");
+        String strPos = tag(str).trim().replace(" ", "\n").replace("/", " ");
         String outputFileTagger = "data/" + inputNum + "-postag.txt";
         try (FileWriter fw2 = new FileWriter(new File(outputFileTagger))) {
             fw2.write(strPos);
@@ -152,9 +152,9 @@ public class VNTagger {
                 int i = datums.indexOf(di);
                 for (int j = i + 1; j < datums.size(); j++) {
                     Datum dj = datums.get(j);
-                    if (di.word.toLowerCase().equals(dj.word.toLowerCase()) && di.posTag.equals(dj.posTag)) {
+                    if (di.equals(dj)) {
                         count++;
-                        dj.tf = -i;
+                        dj.tf = -i;     /// !!! cần tốt hơn
                     }
                 }
                 di.tf = count;
@@ -174,7 +174,8 @@ public class VNTagger {
         //String s = ins.tag("Bệnh nhân Vũ Dư dùng thuốc Biseptol.");
         //System.out.println(s);
         try {
-            ins.tagger("0");
+            List<Datum> datums = ins.tagger("0");
+            System.out.println(datums.toString());
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -1,3 +1,5 @@
-﻿ Bệnh_nhân Vũ_Dư dùng thuốc Biseptol .
-Ông ấy bị biến_chứng nặng .
+Bệnh_nhân Vũ_Dư được đưa đến bệnh_viện .
+Vũ_Dư dùng thuốc Biseptol .
+Anh_ấy bị biến_chứng nặng .
 Thật không ?
+Thật chứ ?
