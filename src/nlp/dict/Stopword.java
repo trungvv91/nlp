@@ -12,7 +12,7 @@ import java.util.Arrays;
  * @author Manh Tien
  */
 public class Stopword {
-    // <editor-fold defaultstate="collapsed" desc="Your Fold Comment">
+    // <editor-fold defaultstate="collapsed" desc="mảng static chứa các stopwords">
     public final static String STOPWORDS[] = {
         ",",
         ":",

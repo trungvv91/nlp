@@ -10,7 +10,6 @@ import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import nlp.dict.Conjunction;
 import nlp.sentenceExtraction.DatumUtil;
@@ -72,257 +71,230 @@ public class WordsGraph {
 
         ArrayList<ArrayList<Datum>> sens = DatumUtil.DatumToSentence(datums);
 
-        // <editor-fold defaultstate="collapsed" desc="xét 2 câu liên tiếp --> trùng subject thì ghép">
+        // <editor-fold defaultstate="collapsed" desc="xét 2 câu liên tiếp --> trùng subject hoặc verb thì ghép">
+/*
         List<Datum> tmpList = new ArrayList<>();
         for (int i = 0; i < sens.size() - 2; i++) {
-            List<Datum> seni = sens.get(i);
-            int j = i + 1;
-            int indexToAdd = -1;
-            List<Datum> senj = sens.get(j);
-            tmpList.clear();
-            for (int k = 0; k < seni.size(); k++) {
-                Datum dik = seni.get(k);
-                for (int h = 0; h < senj.size(); h++) {
-                    Datum djh = senj.get(h);
-
-                    /// co-ref là N or Np ??? 
-                    if (dik.equals(djh) && (dik.posTag.equals("N") || dik.posTag.equals("Np"))) {
-                        String phrasei = "";
-                        int endChunki = k;
-                        /// tim iPhrase cua di va dj
-                        if (k > 0 && seni.get(k - 1).iPhrase == dik.iPhrase) {
-                            phrasei += seni.get(k - 1).word.toLowerCase() + " ";
-                        }
-                        phrasei += dik.word.toLowerCase();
-                        if (k < seni.size() - 1 && seni.get(k + 1).iPhrase == dik.iPhrase) {
-                            phrasei += seni.get(k + 1).word.toLowerCase();
-                            endChunki = k + 1;
-                        }
-
-                        String phrasej = "";
-                        int endChunkj = h;
-                        if (h > 0 && senj.get(h - 1).iPhrase == djh.iPhrase) {
-                            phrasej += senj.get(h - 1).word + " ";
-                        }
-                        phrasej += djh.word.toLowerCase();
-                        if (k < senj.size() - 1 && senj.get(h + 1).iPhrase == djh.iPhrase) {
-                            phrasej += senj.get(h + 1).word.toLowerCase();
-                            endChunkj = h + 1;
-                        }
-                        /// Bệnh_nhân Vũ_Dư vs. Vũ_Dư
-                        if ((phrasej.contains(phrasei) || phrasei.contains(phrasej))
-                                && endChunki < seni.size() - 1
-                                && (seni.get(endChunki + 1).posTag.equals("R")
-                                || seni.get(endChunki + 1).posTag.equals("V"))) {
-                            boolean hasImportantWord = false;
-                            for (int l = 0; l < k; l++) {
-                                if (seni.get(l).importance == true) {
-                                    hasImportantWord = true;    /// trước dik có 1 từ important
-                                    break;
-                                }
-                            }
-                            if (hasImportantWord == false) {
-                                indexToAdd = endChunkj + 1;
-                                for (int l = endChunki + 1; l < seni.size() - 1; l++) {
-                                    tmpList.add(seni.get(l));   /// phần còn lại của câu seni
-                                }
-                            }
-                        }
-                    }
-                }
-            }       // end for k
-
-            /// ghép seni và senj
-            if (!tmpList.isEmpty() && indexToAdd > -1) {
-                senj.addAll(indexToAdd, tmpList);
-                senj.add(indexToAdd + tmpList.size(), new Datum("và", "C"));
-                sens.remove(i);
-                i--;
-            }
+        List<Datum> seni = sens.get(i);
+        int j = i + 1;
+        int indexToAdd = -1;
+        List<Datum> senj = sens.get(j);
+        tmpList.clear();
+        for (int k = 0; k < seni.size(); k++) {
+        Datum dik = seni.get(k);
+        for (int h = 0; h < senj.size(); h++) {
+        Datum djh = senj.get(h);
+        
+        /// co-ref là N or Np ??? 
+        if (dik.equals(djh) && (dik.posTag.equals("N") || dik.posTag.equals("Np"))) {
+        String phrasei = "";
+        int endChunki = k;
+        /// tim iPhrase cua di va dj
+        if (k > 0 && seni.get(k - 1).iPhrase == dik.iPhrase) {
+        phrasei += seni.get(k - 1).word.toLowerCase() + " ";
         }
-        // </editor-fold>
-
-        // <editor-fold defaultstate="collapsed" desc="xét 2 câu liên tiếp --> trùng verb thì ghép">
+        phrasei += dik.word.toLowerCase();
+        if (k < seni.size() - 1 && seni.get(k + 1).iPhrase == dik.iPhrase) {
+        phrasei += seni.get(k + 1).word.toLowerCase();
+        endChunki = k + 1;
+        }
+        
+        String phrasej = "";
+        int endChunkj = h;
+        if (h > 0 && senj.get(h - 1).iPhrase == djh.iPhrase) {
+        phrasej += senj.get(h - 1).word + " ";
+        }
+        phrasej += djh.word.toLowerCase();
+        if (k < senj.size() - 1 && senj.get(h + 1).iPhrase == djh.iPhrase) {
+        phrasej += senj.get(h + 1).word.toLowerCase();
+        endChunkj = h + 1;
+        }
+        /// Bệnh_nhân Vũ_Dư vs. Vũ_Dư
+        if ((phrasej.contains(phrasei) || phrasei.contains(phrasej))
+        && endChunki < seni.size() - 1
+        && (seni.get(endChunki + 1).posTag.equals("R")
+        || seni.get(endChunki + 1).posTag.equals("V"))) {
+        boolean hasImportantWord = false;
+        for (int l = 0; l < k; l++) {
+        if (seni.get(l).importance == true) {
+        hasImportantWord = true;    /// trước dik có 1 từ important
+        break;
+        }
+        }
+        if (hasImportantWord == false) {
+        indexToAdd = endChunkj + 1;
+        for (int l = endChunki + 1; l < seni.size() - 1; l++) {
+        tmpList.add(seni.get(l));   /// phần còn lại của câu seni
+        }
+        }
+        }
+        }
+        }
+        }       // end for k
+        
+        /// ghép seni và senj
+        if (!tmpList.isEmpty() && indexToAdd > -1) {
+        senj.addAll(indexToAdd, tmpList);
+        senj.add(indexToAdd + tmpList.size(), new Datum("và", "C"));
+        sens.remove(i);
+        i--;
+        }
+        }
+        
         for (int i = 0; i < sens.size() - 2; i++) {
-            //ghep 2 cau neu trung Verb
-            List<Datum> seni = sens.get(i);
-            List<Datum> senj = sens.get(i + 1);
-
-            /// tìm subject
-            String verbi = "";
-            for (Datum di : seni) {
-                if (di.posTag.equals("V")) {
-                    for (int k = seni.indexOf(di); seni.get(k).iPhrase == di.iPhrase; k++) {
-                        verbi += seni.get(k).word + " ";
-                    }
-                    break;
-                }
-            }
-
-            String verbj = "";
-            for (Datum dj : senj) {
-                if (dj.posTag.equals("V")) {
-                    for (int k = senj.indexOf(dj); senj.get(k).iPhrase == dj.iPhrase; k++) {
-                        verbj += senj.get(k).word + " ";
-                    }
-                    break;
-                }
-            }
-
-            if (verbi.equals(verbj)) {
-                Random r = new Random();
-                String[] list = {"và", ","};
-                Datum dt = new Datum(list[r.nextInt(2)], "C");
-                dt.chunk = "C";
-                dt.stopWord = true;
-                int k;
-                for (k = 0; seni.get(k).iPhrase == 0; k++) {
-                }
-                seni.add(k, dt);
-                for (int l = 0; senj.get(l).iPhrase == 0; l++) {
-                    seni.add(k + 1, senj.get(l));
-                }
-                sens.remove(i + 1);     // remove senj
-            }
+        //ghep 2 cau neu trung Verb
+        List<Datum> seni = sens.get(i);
+        List<Datum> senj = sens.get(i + 1);
+        
+        /// tìm subject
+        String verbi = "";
+        for (Datum di : seni) {
+        if (di.posTag.equals("V")) {
+        for (int k = seni.indexOf(di); seni.get(k).iPhrase == di.iPhrase; k++) {
+        verbi += seni.get(k).word + " ";
+        }
+        break;
+        }
+        }
+        
+        String verbj = "";
+        for (Datum dj : senj) {
+        if (dj.posTag.equals("V")) {
+        for (int k = senj.indexOf(dj); senj.get(k).iPhrase == dj.iPhrase; k++) {
+        verbj += senj.get(k).word + " ";
+        }
+        break;
+        }
+        }
+        
+        if (verbi.equals(verbj)) {
+        Random r = new Random();
+        String[] list = {"và", ","};
+        Datum dt = new Datum(list[r.nextInt(2)], "C");
+        dt.chunk = "C";
+        dt.stopWord = true;
+        int k;
+        for (k = 0; seni.get(k).iPhrase == 0; k++) {
+        }
+        seni.add(k, dt);
+        for (int l = 0; senj.get(l).iPhrase == 0; l++) {
+        seni.add(k + 1, senj.get(l));
+        }
+        sens.remove(i + 1);     // remove senj
+        }
         }   /// end for
+         */
         // </editor-fold>
 
+        // <editor-fold defaultstate="collapsed" desc="find essential fragments">
         System.out.println("----------");
+
+        /**
+         * start & end of basic phrases
+         */
         ArrayList<Integer[]> termIndex = new ArrayList<>();
         for (List<Datum> sen : sens) {
             Integer[] index = new Integer[2];
-            for (int i = 0; i < sen.size() - 1; i++) {
-                Datum di = sen.get(i);
-                if (di.importance == true) {
-                    int iphrase = di.iPhrase;
-                    for (Datum d : sen) {
-                        if (d.iPhrase == iphrase) {
-                            index[0] = sen.indexOf(d);
-                            break;
-                        }
-                    }
-                    if (i != sen.size() - 1) {
-                        for (int j = sen.size() - 1; j > i; j--) {
-                            Datum dj = sen.get(j);
-                            if (dj.importance == true) {
-                                index[1] = j;
-                                int phrase = dj.iPhrase;
-                                for (int k = sen.size() - 1; k >= j; k--) {
-                                    if (sen.get(k).iPhrase == phrase) {
-                                        index[1] = k;
-                                        break;
-                                    }
-                                }
-                                break;
-                            } else {
-                                index[1] = null;
-                            }
-                        }
-                        break;
-                    } else if (i == sen.size() - 1 && sen.get(i).importance == true) {
-                        index[1] = i;
-                    } else {
-                        index[1] = index[0];
-                    }
-                } else {
-                    index[0] = null;
-                    index[1] = null;
+            int i, j;
+            for (i = 0; i < sen.size(); i++) {
+                if (sen.get(i).importance == true) {
+                    break;
                 }
             }
+            index[0] = (i == sen.size()) ? -1 : i;
+            for (j = sen.size() - 1; j > -1; j--) {
+                if (sen.get(j).importance == true) {
+                    break;
+                }
+            }
+            index[1] = j;
+
+            i = index[0];
+            while (i > 0 && sen.get(i - 1).iPhrase == sen.get(index[0]).iPhrase) {
+                i--;
+            }
+            index[0] = i;
+
+            while (j > -1 && j < sen.size() - 1 && sen.get(j + 1).iPhrase == sen.get(index[1]).iPhrase) {
+                j++;
+            }
+            index[1] = j;
+
             termIndex.add(index);
         }
         System.out.println("----------");
-
+        // </editor-fold>
 
         for (List<Datum> sen : sens) {
             int senIndex = sens.indexOf(sen);
-            if (termIndex.get(senIndex)[0] != null && termIndex.get(senIndex)[1] != null) {
-                int iIndex = termIndex.get(senIndex)[0];
-                int jIndex = termIndex.get(senIndex)[1];
-                //Kiem tra bat dau la VP
-                if (sen.get(iIndex).chunk.equals("B-VP")) {
-                    int iIndexSource = iIndex;
-                    if (iIndexSource > 0) {
-                        for (int i = iIndexSource - 1; i >= 0; i--) {
-                            Datum d = sen.get(i);
-                            if (d.chunk.equals("B-NP")) {
-                                iIndex = i;
-                                termIndex.get(senIndex)[0] = i;
-                                break;
-                            }
-                        }
-                    } else {
-                        termIndex.get(senIndex)[0] = iIndex;
-                    }
-                }
-                //Kiem tra ket thuc la NP
-                if ((sen.get(jIndex).chunk.equals("B-NP") || sen.get(jIndex).chunk.equals("I-NP")) && jIndex < sen.size() - 1) {
-                    if (sen.get(jIndex + 1).posTag.equals("V")) {
-                        int phrase = sen.get(jIndex + 1).iPhrase;
-                        int count = 0;
-                        for (Datum d : sen) {
-                            if (d.iPhrase == phrase) {
-                                count++;
-                            }
-                        }
-                        jIndex = jIndex + count;
-                        if (jIndex > sen.size()) {
-                            jIndex = sen.size();
-                        }
-                        termIndex.get(senIndex)[1] = jIndex;
-                    }
-                }
-                //Kiem tra ket thuc la V
-                if (sen.get(jIndex).posTag.equals("V") && jIndex < sen.size() - 1) {
-                    if (sen.get(jIndex + 1).chunk.equals("B-NP")) {
-                        int phrase = sen.get(jIndex + 1).iPhrase;
-                        int count = 0;
-                        for (Datum d : sen) {
-                            if (d.iPhrase == phrase) {
-                                count++;
-                            }
-                        }
-                        jIndex = jIndex + count;
-                        termIndex.get(senIndex)[1] = jIndex;
-                        if (sen.get(jIndex + 1).chunk.equals("B-VP") && jIndex < sen.size() - 1) {
-                            int phrase1 = sen.get(jIndex + 1).iPhrase;
-                            int count1 = 0;
-                            for (Datum d : sen) {
-                                if (d.iPhrase == phrase1) {
-                                    count1++;
-                                }
-                            }
-                            jIndex = jIndex + count1;
-                            termIndex.get(senIndex)[1] = jIndex;
+            if (termIndex.get(senIndex)[0] != -1 && termIndex.get(senIndex)[1] != -1) {
+                int sIndex = termIndex.get(senIndex)[0];
+                int eIndex = termIndex.get(senIndex)[1];
+
+                /// Kiểm tra bắt đầu là 1 VP thì nối NP trước đó vào
+                if (sIndex > 0 && sen.get(sIndex).chunk.equals("B-VP")) {
+                    for (int i = sIndex - 1; i >= 0; i--) {
+                        Datum d = sen.get(i);
+                        if (d.chunk.equals("B-NP")) {
+                            sIndex = i;
+                            break;
                         }
                     }
                 }
+
+                /// Kiểm tra kết thúc là 1 NP thì nối V và A sau đó vào
+                if (eIndex < sen.size() - 1 && (sen.get(eIndex + 1).posTag.equals("V") || sen.get(eIndex + 1).posTag.equals("A"))
+                        && ((sen.get(eIndex).chunk.equals("B-NP") || sen.get(eIndex).chunk.equals("I-NP")))) {
+                    int tIndex = eIndex + 1;
+                    int phrase = sen.get(tIndex).iPhrase;
+                    while (tIndex < sen.size() - 1 && sen.get(tIndex + 1).iPhrase == phrase) {
+                        tIndex++;
+                    }
+                    eIndex = tIndex;
+                }
+
+                /// Kiểm tra kết thúc là 1 V thì nối cụm VP vào
+                if (eIndex < sen.size() - 1 && sen.get(eIndex).posTag.equals("V")
+                        && sen.get(eIndex + 1).chunk.equals("B-NP")) {
+                    int tIndex = eIndex + 1;
+                    int phrase = sen.get(tIndex).iPhrase;
+                    while (tIndex < sen.size() - 1 && sen.get(tIndex + 1).iPhrase == phrase) {
+                        tIndex++;
+                    }
+                    eIndex = tIndex;
+                    if (sen.get(eIndex + 1).chunk.equals("B-VP") && eIndex < sen.size() - 1) {
+                        int tIndex1 = eIndex + 1;
+                        int phrase1 = sen.get(tIndex1).iPhrase;
+                        while (tIndex1 < sen.size() - 1 && sen.get(tIndex1 + 1).iPhrase == phrase1) {
+                            tIndex1++;
+                        }
+                        eIndex = tIndex1;
+                    }
+                }
+
                 boolean hasV = false;
                 boolean hasN = false;
-                for (int i = termIndex.get(senIndex)[0]; i <= termIndex.get(senIndex)[1]; i++) {
+                for (int i = sIndex; i <= eIndex; i++) {
                     Datum d = sen.get(i);
                     if (d != null) {
                         if (d.posTag.equals("V")) {
                             hasV = true;
-                        }
-                        if (d.chunk.equals("B-NP")) {
+                        } else if (d.chunk.equals("B-NP")) {
                             hasN = true;
                         }
                     }
                 }
-                //kiem tra co N va khong co V
-                if (hasN == true && hasV == false) {
-                    int indexSource = termIndex.get(senIndex)[0];
-                    if (indexSource > 0) {
-                        for (int i = indexSource - 1; i >= 0; i--) {
-                            Datum d = sen.get(i);
-                            if (d.posTag.equals("V")) {
-                                termIndex.get(senIndex)[0] = i;
+
+                /// Có NP nhưng ko có VP thì tìm VP ở trước đó, rồi tìm tiếp NP trước đó
+                if (sIndex > 0 && hasV == false) {
+                    if (hasN) {                     /// Có NP nhưng ko có VP
+                        for (int i = sIndex - 1; i >= 0; i--) {
+                            if (sen.get(i).posTag.equals("V")) {
+                                sIndex = i;
                                 if (i > 0) {
                                     for (int j = i - 1; j >= 0; j--) {
-                                        Datum dj = sen.get(j);
-                                        if (dj.chunk.equals("B-NP")) {
-                                            termIndex.get(senIndex)[0] = j;
+                                        if (sen.get(j).chunk.equals("B-NP")) {
+                                            sIndex = j;
                                             break;
                                         }
                                     }
@@ -330,21 +302,16 @@ public class WordsGraph {
                                 break;
                             }
                         }
-                    }
-                } //khong co ca N va V
-                else if (hasN == false && hasV == false) {
-                    int indexSource = termIndex.get(senIndex)[0];
-                    if (indexSource > 0) {
+                    } else {                        /// Không có cả NP và VP
                         boolean foundV = false;
-                        for (int i = indexSource - 1; i >= 0; i--) {
-                            Datum d = sen.get(i);
-                            if (d.chunk.equals("B-VP")) {
-                                termIndex.get(senIndex)[0] = i;
+                        for (int i = sIndex - 1; i >= 0; i--) {
+                            if (sen.get(i).chunk.equals("B-VP")) {
+                                sIndex = i;
                                 foundV = true;
                                 if (i > 0) {
                                     for (int j = i - 1; j >= 0; j--) {
-                                        if (d.chunk.equals("B-NP")) {
-                                            termIndex.get(senIndex)[0] = j;
+                                        if (sen.get(j).chunk.equals("B-NP")) {
+                                            sIndex = j;
                                             break;
                                         }
                                     }
@@ -352,42 +319,38 @@ public class WordsGraph {
                                 break;
                             }
                         }
-                        if (foundV == false) {
-                            for (int i = indexSource - 1; i >= 0; i--) {
-                                Datum d = sen.get(i);
-                                if (d.chunk.equals("B-NP")) {
-                                    termIndex.get(senIndex)[0] = i;
-                                    foundV = true;
+                        if (!foundV) {              /// nếu ko tìm thấy VP ở trước thì lấy luôn NP
+                            for (int i = sIndex - 1; i >= 0; i--) {
+                                if (sen.get(i).chunk.equals("B-NP")) {
+                                    sIndex = i;
                                     break;
                                 }
                             }
                         }
                     }
                 }
-                //Kiem tra Declare word
+
+                //Kiem tra DECLARE_WORDS word
                 boolean hasDeclare = false;
                 int iDec = -1;
                 for (Datum di : sen) {
-                    for (int i = 0; i < conj.Declare.length; i++) {
-                        if (di.word.toLowerCase().equals(conj.Declare[i])) {
-                            hasDeclare = true;
-                            iDec = sen.indexOf(di);
-                        }
+                    if (Conjunction.checkDeclareWord(di.word)) {
+                        hasDeclare = true;
+                        iDec = sen.indexOf(di);
                     }
                 }
-                if (hasDeclare == true && iDec < termIndex.get(senIndex)[0]) {
-                    termIndex.get(senIndex)[0] = iDec + 1;
-                } else if (hasDeclare == true && iDec > termIndex.get(senIndex)[0]) {
-                    termIndex.get(senIndex)[0] = 0;
+                if (hasDeclare) {
+                    sIndex = (iDec < sIndex) ? iDec + 1 : 0;
                 }
+
                 //Kiem tra conjunction
                 boolean hasFConj = false;
                 int iConj = -1;
                 int jConj = -1;
                 int indexOfConj = -1; //Thu tu conjunction trong mang
                 for (Datum di : sen) {
-                    for (int i = 0; i < conj.Conj.length; i++) {
-                        if (di.word.toLowerCase().equals(conj.Conj[i][0])) {
+                    for (int i = 0; i < Conjunction.CONJUNCTIONS.length; i++) {
+                        if (di.word.toLowerCase().equals(Conjunction.CONJUNCTIONS[i][0])) {
                             hasFConj = true;
                             iConj = sen.indexOf(di);
                             indexOfConj = i;
@@ -395,9 +358,9 @@ public class WordsGraph {
                         }
                     }
                 }
-                if (hasFConj && conj.Conj[indexOfConj][1] != null) {
+                if (hasFConj && Conjunction.CONJUNCTIONS[indexOfConj][1] != null) {
                     for (Datum di : sen) {
-                        if (sen.indexOf(di) > iConj && di.word.toLowerCase().equals(conj.Conj[indexOfConj][1])) {
+                        if (sen.indexOf(di) > iConj && di.word.toLowerCase().equals(Conjunction.CONJUNCTIONS[indexOfConj][1])) {
                             jConj = sen.indexOf(di);
                             boolean hasIptWord = false; // kiem tra important word giua 2 conj
                             for (int i = iConj; i <= jConj; i++) {
@@ -410,7 +373,7 @@ public class WordsGraph {
                             if (hasIptWord) {
                                 termIndex.get(senIndex)[0] = 0;
                             } else {
-                                if (conj.Conj[indexOfConj][2].equals("A")) {
+                                if (Conjunction.CONJUNCTIONS[indexOfConj][2].equals("A")) {
                                     termIndex.get(senIndex)[0] = jConj + 1;
                                 } else {
                                     termIndex.get(senIndex)[1] = jConj - 1;
@@ -418,7 +381,7 @@ public class WordsGraph {
                             }
                         }
                     }
-                } else if (hasFConj == true && conj.Conj[indexOfConj][1] == null) {
+                } else if (hasFConj == true && Conjunction.CONJUNCTIONS[indexOfConj][1] == null) {
                     boolean hasIptWord = false;
                     for (int i = 0; i <= iConj; i++) {
                         Datum di = sen.get(i);
@@ -429,7 +392,7 @@ public class WordsGraph {
                     if (hasIptWord) {
                         termIndex.get(senIndex)[0] = 0;
                     } else {
-                        if ("A".equals(conj.Conj[indexOfConj][2])) {
+                        if ("A".equals(Conjunction.CONJUNCTIONS[indexOfConj][2])) {
                             termIndex.get(senIndex)[0] = iConj + 1;
                         } else {
                             termIndex.get(senIndex)[1] = iConj - 1;
@@ -445,7 +408,7 @@ public class WordsGraph {
                 }
 
             }
-        }
+        }   // end of for sens
 
 
         int numOfWords = 0;

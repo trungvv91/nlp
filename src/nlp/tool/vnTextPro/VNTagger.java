@@ -120,6 +120,7 @@ public class VNTagger {
                 phrase++;
             }
             d.iPhrase = phrase;
+
             if (Stopword.checkStopWord(w[0]) && !"Np".equals(d.posTag)) {
                 d.stopWord = true;
             }
@@ -133,7 +134,7 @@ public class VNTagger {
             if (Punctuation.checkPuctuation(d.word)) {
                 d.chunk = "O";      /// dấu câu
                 if (i < nLines - 1) {
-                    lines.set(i+1, lines.get(i+1).replace("I-", "B-"));      /// continue --> begin nếu trước đó là dấu câu
+                    lines.set(i + 1, lines.get(i + 1).replace("I-", "B-"));      /// continue --> begin nếu trước đó là dấu câu
                 }
             }
 //            System.out.println("old: " + datums.get(i).posTag + " vs. new: " + d.posTag);

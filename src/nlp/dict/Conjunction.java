@@ -13,8 +13,9 @@ import java.util.List;
  * Conjunction for 
  */
 public class Conjunction {
-    public List<List<String>> conj= new ArrayList<List<String>>();
-    public String Declare[] = {
+    public List<List<String>> conj= new ArrayList<>();
+    
+    public final static String DECLARE_WORDS[] = {
         "nêu_rõ",
         "cho_biết",
         "tuyên_bố",
@@ -22,7 +23,8 @@ public class Conjunction {
         "nhấn_mạnh",
         ":"
     };
-    public String Conj[][] =
+    
+    public final static String CONJUNCTIONS[][] =
     {
         {"nếu_như", "thì", "A"},
         {"nếu", "thì", "A"},
@@ -85,4 +87,16 @@ public class Conjunction {
 //        {"thành_ra", null, "A"},
 //        {"nên", null, "A"},      
     };
+    
+    public static boolean checkDeclareWord(String s) {
+//        int index = Arrays.binarySearch(STOPWORDS, s);
+//        return (index >= 0);
+        String s1 = s.toLowerCase();
+        for (int i = 0; i < DECLARE_WORDS.length; i++) {
+            if (s1.equals(DECLARE_WORDS[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

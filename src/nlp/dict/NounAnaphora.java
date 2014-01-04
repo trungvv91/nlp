@@ -12,7 +12,7 @@ import java.util.Arrays;
  * @author tien
  */
 public class NounAnaphora {
-    // <editor-fold defaultstate="collapsed" desc="Your Fold Comment">
+    // <editor-fold defaultstate="collapsed" desc="mảng static chứa các đồng tham chiếu thường gặp">
     public final static String NA1[] = {
         "anh_ấy",
         "anh này",

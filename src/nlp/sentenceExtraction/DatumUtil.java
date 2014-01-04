@@ -13,7 +13,7 @@ import nlp.dict.Punctuation;
  * @author TRUNG
  */
 public class DatumUtil {
-    
+
     public static int getNumberOfSentences(List<Datum> datums) {
         return datums.get(datums.size() - 1).iSentence + 1;
     }
@@ -26,7 +26,7 @@ public class DatumUtil {
                 datums.add(datum);
             }
         }
-        
+
         return datums;
     }
 
@@ -37,7 +37,7 @@ public class DatumUtil {
         }
         return wordList;
     }
-    
+
     public static ArrayList<ArrayList<Datum>> DatumToSentence(List<Datum> datums) {
         ArrayList<ArrayList<Datum>> sentenceArray = new ArrayList<>();
 
