@@ -1,4 +1,5 @@
-Các	L	B-NP
+﻿	﻿	B-NP
+Các	L	I-NP
 loại	Nc	I-NP
 hóa_chất	N	I-NP
 thúc	V	B-VP

@@ -24,7 +24,7 @@ public class Main {
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
                 file = listOfFiles[i].getName();
                 if (file.endsWith(".txt")) {
@@ -34,7 +34,6 @@ public class Main {
                         VNTagger tagger = VNTagger.getInstance();
                         List<Datum> datums = tagger.tagger(inputNum);
                         graph.mainWordGraph(inputNum, datums, 120);
-
                     } catch (Exception e) {
                         System.out.println("Error: " + e);
                     }

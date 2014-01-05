@@ -1,3 +1,4 @@
+Dư	Np	B-NP
 bị	V	B-VP
 ốm	A	B-AP
 .	.	O

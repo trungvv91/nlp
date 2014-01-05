@@ -1,3 +1,4 @@
+﻿	﻿	O
 Theo	E	B-PP
 ông	Nc	B-NP
 Trần_Trọng_Tuấn	Np	I-NP
@@ -20,7 +21,7 @@ triển_khai	V	I-VP
 chi_tiết	N	B-NP
 dự_án	N	I-NP
 chung_cư	N	I-NP
-157	R8	I-NP
+157	R8	M	I-NP
 Tô_Hiến_Thành	Np	I-NP
 -	-	I-NP
 dự_án	N	I-NP
@@ -37,7 +38,7 @@ buổi	N	B-NP
 giao_lưu	V	I-NP
 trực_tuyến	A	I-NP
 ngày	N	I-NP
-17	7	I-NP
+17	7	M	I-NP
 ,	,	O
 nhiều	A	B-NP
 người	N	I-NP
@@ -78,7 +79,7 @@ nhà_ở	N	B-NP
 xã_hội	N	I-NP
 tại	E	B-PP
 chung_cư	N	B-NP
-157	R8	I-NP
+157	R8	M	I-NP
 Tô_Hiến_Thành	Np	I-NP
 được	V	B-VP
 Hội_đồng	N	B-NP
@@ -217,7 +218,7 @@ Theo	E	B-PP
 Trần_Trọng_Tuấn	Np	I-NP
 ,	,	I-NP
 chung_cư	N	I-NP
-157	R8	I-NP
+157	R8	M	I-NP
 Tô_Hiến_Thành	Np	I-NP
 có	V	B-VP
 114	M	B-NP
@@ -451,7 +452,7 @@ Nguyễn_Hoàng_Minh	Np	I-NP
 tính	V	B-VP
 đến	E	B-PP
 ngày	N	B-NP
-15	7	I-NP
+15	7	M	I-NP
 đã	R	B-VP
 có	V	I-VP
 19	M	B-NP

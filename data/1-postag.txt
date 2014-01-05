@@ -1,3 +1,4 @@
+﻿ ﻿
 Khai_báo Np
 là C
 xe_máy N
@@ -38,7 +39,7 @@ cấm V
 nhập_khẩu V
 . .
 Chiều Np
-19 7
+19 7 M
 , ,
 Cục Np
 Hải Np
@@ -193,7 +194,7 @@ quy_định V
 tại E
 Nghị_định Np
 số N
-12 2006
+12 2006 M
 của E
 Chính_phủ N
 . .

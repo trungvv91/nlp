@@ -23,15 +23,13 @@ import org.apache.commons.lang3.text.WordUtils;
  */
 public class WordsGraph {
 
-    public List<Datum> datums;
-    public Conjunction conj = new Conjunction();
     public String outString = "";
 
     /**
      * Determine keywords in datums list by set d.importance=true
      * @param numOfWordImportance 
      */
-    public void setWordImportance(int numOfWordImportance) {
+    public void setWordImportance(List<Datum> datums, int numOfWordImportance) {
         System.out.println("Start word-importance set...");
         /// construct word graph
         List<Datum> vertex = new ArrayList<>();
@@ -64,10 +62,10 @@ public class WordsGraph {
 
     public void mainWordGraph(String inputNum, List<Datum> dts, int wordMax) throws IOException {
         Synonym.initSynonymMap();
-        datums = SentenceExtraction.ExtractSentences(inputNum, dts);
+        List<Datum> datums = SentenceExtraction.ExtractSentences(inputNum, dts);
 
         //Lay 15% so tu la importance words
-        setWordImportance(datums.size() * 15 / 100);
+        setWordImportance(datums, datums.size() * 15 / 100);
 
         ArrayList<ArrayList<Datum>> sens = DatumUtil.DatumToSentence(datums);
 
@@ -225,9 +223,10 @@ public class WordsGraph {
         System.out.println("----------");
         // </editor-fold>
 
+        /// Bắt đầu xử lý
         for (List<Datum> sen : sens) {
             int senIndex = sens.indexOf(sen);
-            if (termIndex.get(senIndex)[0] != -1 && termIndex.get(senIndex)[1] != -1) {
+            if (termIndex.get(senIndex)[0] != -1 && termIndex.get(senIndex)[1] != -1) {     /// !!! null --> -1
                 int sIndex = termIndex.get(senIndex)[0];
                 int eIndex = termIndex.get(senIndex)[1];
 
@@ -330,94 +329,98 @@ public class WordsGraph {
                     }
                 }
 
-                //Kiem tra DECLARE_WORDS word
+                /// Kiểm tra DECLARE_WORDS word
                 boolean hasDeclare = false;
                 int iDec = -1;
-                for (Datum di : sen) {
-                    if (Conjunction.checkDeclareWord(di.word)) {
+                for (int i = sen.size() - 1; i > -1; i--) {
+                    if (Conjunction.checkDeclareWord(sen.get(i).word)) {
                         hasDeclare = true;
-                        iDec = sen.indexOf(di);
+                        iDec = i;
+                        break;
                     }
                 }
                 if (hasDeclare) {
-                    sIndex = (iDec < sIndex) ? iDec + 1 : 0;
+                    sIndex = (iDec < sIndex) ? iDec + 1 : 0;        /// ???
                 }
 
-                //Kiem tra conjunction
+                /// Kiểm tra Conjunction
                 boolean hasFConj = false;
                 int iConj = -1;
                 int jConj = -1;
                 int indexOfConj = -1; //Thu tu conjunction trong mang
                 for (Datum di : sen) {
-                    for (int i = 0; i < Conjunction.CONJUNCTIONS.length; i++) {
-                        if (di.word.toLowerCase().equals(Conjunction.CONJUNCTIONS[i][0])) {
-                            hasFConj = true;
-                            iConj = sen.indexOf(di);
-                            indexOfConj = i;
-                            break;
-                        }
+                    indexOfConj = Conjunction.checkConjunction(di.word);
+                    if (indexOfConj > -1) {
+                        hasFConj = true;
+                        iConj = sen.indexOf(di);
+                        break;
                     }
-                }
-                if (hasFConj && Conjunction.CONJUNCTIONS[indexOfConj][1] != null) {
-                    for (Datum di : sen) {
-                        if (sen.indexOf(di) > iConj && di.word.toLowerCase().equals(Conjunction.CONJUNCTIONS[indexOfConj][1])) {
-                            jConj = sen.indexOf(di);
-                            boolean hasIptWord = false; // kiem tra important word giua 2 conj
-                            for (int i = iConj; i <= jConj; i++) {
-                                Datum d = sen.get(i);
-                                if (d.importance == true) {
-                                    hasIptWord = true;
-                                    break;
-                                }
-                            }
-                            if (hasIptWord) {
-                                termIndex.get(senIndex)[0] = 0;
-                            } else {
-                                if (Conjunction.CONJUNCTIONS[indexOfConj][2].equals("A")) {
-                                    termIndex.get(senIndex)[0] = jConj + 1;
-                                } else {
-                                    termIndex.get(senIndex)[1] = jConj - 1;
-                                }
-                            }
-                        }
-                    }
-                } else if (hasFConj == true && Conjunction.CONJUNCTIONS[indexOfConj][1] == null) {
-                    boolean hasIptWord = false;
-                    for (int i = 0; i <= iConj; i++) {
-                        Datum di = sen.get(i);
-                        if (di.importance == true) {
-                            hasIptWord = true;
-                        }
-                    }
-                    if (hasIptWord) {
-                        termIndex.get(senIndex)[0] = 0;
-                    } else {
-                        if ("A".equals(Conjunction.CONJUNCTIONS[indexOfConj][2])) {
-                            termIndex.get(senIndex)[0] = iConj + 1;
-                        } else {
-                            termIndex.get(senIndex)[1] = iConj - 1;
-                        }
-                    }
-                }
-                if ("và".equals(sen.get(termIndex.get(senIndex)[1]).word) || "hoặc".equals(sen.get(termIndex.get(senIndex)[1]).word)
-                        || "và ".equals(sen.get(termIndex.get(senIndex)[1]).word) || "hoặc ".equals(sen.get(termIndex.get(senIndex)[1]).word)) {
-                    termIndex.get(senIndex)[1]--;
-                }
-                if (sen.get(termIndex.get(senIndex)[0]).word.equals(",") || sen.get(termIndex.get(senIndex)[0]).word.equals(",")) {
-                    termIndex.get(senIndex)[0]++;
                 }
 
+                if (hasFConj) {
+                    if (Conjunction.CONJUNCTIONS[indexOfConj][1] != null) {     /// cặp liên từ --> tìm liên từ thứ 2
+                        for (int i = iConj + 1; i < sen.size(); i++) {
+                            if (sen.get(i).word.toLowerCase().equals(Conjunction.CONJUNCTIONS[indexOfConj][1])) {
+                                jConj = i;
+                                boolean hasIptWord = false;     // kiem tra important word giua 2 conjunction
+                                for (int j = iConj; j <= jConj; j++) {
+                                    if (sen.get(j).importance == true) {
+                                        hasIptWord = true;
+                                        break;
+                                    }
+                                }
+                                if (hasIptWord) {
+                                    sIndex = 0;     /// ???
+                                } else {
+                                    if ("A".equals(Conjunction.CONJUNCTIONS[indexOfConj][2])) {
+                                        sIndex = jConj + 1;
+                                    } else {        /// A thì bỏ phần trước Conj, B thì bỏ phần sau Conj
+                                        eIndex = jConj - 1;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    } else {        /// chỉ có 1 liên từ
+                        boolean hasIptWord = false;
+                        for (int i = 0; i <= iConj; i++) {
+                            Datum di = sen.get(i);
+                            if (di.importance == true) {
+                                hasIptWord = true;
+                                break;
+                            }
+                        }
+                        if (hasIptWord) {
+                            sIndex = 0;
+                        } else {
+                            if ("A".equals(Conjunction.CONJUNCTIONS[indexOfConj][2])) {
+                                sIndex = iConj + 1;
+                            } else {
+                                eIndex = iConj - 1;
+                            }
+                        }
+                    }
+                }
+
+                if ("và".equals(sen.get(eIndex).word) || "hoặc".equals(sen.get(eIndex).word)
+                        || "và ".equals(sen.get(eIndex).word) || "hoặc ".equals(sen.get(eIndex).word)) {
+                    eIndex--;
+                }
+                if (sen.get(sIndex).word.equals(",") || sen.get(sIndex).word.equals(", ")) {
+                    sIndex++;
+                }
+
+                termIndex.get(senIndex)[0] = sIndex;
+                termIndex.get(senIndex)[1] = eIndex;
             }
         }   // end of for sens
 
-
-        int numOfWords = 0;
+        /// lọc WordMax, Set senExclude lưu chỉ số những câu bị loại
         Set<Integer> senExclude = new HashSet<>();
-        boolean is120Words = false;
-        int count = 1;
-        while (is120Words == false) {
-            int words = 0;
-            int sizeOfSens = sens.size();
+        int count = 0;      /// số câu bị loại
+        int words = wordMax + 1;
+        while (words > wordMax) {
+            words = 0;
             for (List<Datum> sen : sens) {
                 if (!senExclude.contains(sens.indexOf(sen))) {
                     for (Datum dt : sen) {
@@ -428,26 +431,29 @@ public class WordsGraph {
                 }
             }
             if (words > wordMax) {
-                senExclude.add(SentenceExtraction.mapSenOrderByScore.get(sizeOfSens - count));
                 count++;
-            } else {
-                is120Words = true;
+                /// lấy thằng thấp nhất
+                senExclude.add(SentenceExtraction.mapSenOrderByScore.get(sens.size() - count));
             }
         }
 
         /// Done, decoration
+        int numOfWords = 0;
         for (List<Datum> sen : sens) {
-            //Capitalize the first word in a iSentence
+            // Capitalize the first word in a sentence
             if (!senExclude.contains(sens.indexOf(sen))) {
                 int senIndex = sens.indexOf(sen);
-                if (termIndex.get(senIndex)[0] != null && termIndex.get(senIndex)[1] != null) {
-                    sen.get(termIndex.get(senIndex)[0]).word = WordUtils.capitalize(sen.get(termIndex.get(senIndex)[0]).word);
+                int sIndex = termIndex.get(senIndex)[0];
+                int eIndex = termIndex.get(senIndex)[1];
+                if (sIndex != -1 && eIndex != -1) {
+                    sen.get(sIndex).word = WordUtils.capitalize(sen.get(sIndex).word);          /// !!! tự code hay hơn
                     for (Datum d : sen) {
                         if (!d.chunk.endsWith("O")) {
                             numOfWords++;
                         }
-                        if (sen.indexOf(d) >= termIndex.get(senIndex)[0] && sen.indexOf(d) <= termIndex.get(senIndex)[1]) {
-                            if (!d.word.contains("nlp.sentenceExtraction.Datum")) {
+                        if (sen.indexOf(d) >= sIndex && sen.indexOf(d) <= eIndex) {
+                            /// thuộc essential fragment
+                            if (!d.word.contains("nlp.sentenceExtraction.Datum")) {     /// ???
                                 System.out.print(d.word);
                                 outString += d.word.replace("_", " ");
                                 outString += " ";
@@ -460,6 +466,7 @@ public class WordsGraph {
                 }
             }
         }
+
         System.out.println("Number of words: " + numOfWords);
         String outputFilename = "corpus/AutoSummary/" + inputNum + ".txt";
         try (FileWriter fwriter = new FileWriter(new File(outputFilename))) {
@@ -473,7 +480,6 @@ public class WordsGraph {
             VNTagger tagger = VNTagger.getInstance();
             List<Datum> datums = tagger.tagger("0");
             graph.mainWordGraph("0", datums, 20);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

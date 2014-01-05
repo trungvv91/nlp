@@ -1,4 +1,5 @@
-Khai_báo	Np	B-NP
+﻿	﻿	B-NP
+Khai_báo	Np	I-NP
 là	C	B-VP
 xe_máy	N	B-NP
 LX125	M	I-NP
@@ -38,7 +39,7 @@ cấm	V	B-VP
 nhập_khẩu	V	I-VP
 .	.	O
 Chiều	Np	B-NP
-19	7	I-NP
+19	7	M	I-NP
 ,	,	I-NP
 Cục	Np	I-NP
 Hải	Np	I-NP
@@ -193,7 +194,7 @@ quy_định	V	I-VP
 tại	E	B-PP
 Nghị_định	Np	B-NP
 số	N	I-NP
-12	2006	I-NP
+12	2006	M	I-NP
 của	E	B-PP
 Chính_phủ	N	B-NP
 .	.	O

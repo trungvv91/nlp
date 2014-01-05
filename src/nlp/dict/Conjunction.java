@@ -89,8 +89,6 @@ public class Conjunction {
     };
     
     public static boolean checkDeclareWord(String s) {
-//        int index = Arrays.binarySearch(STOPWORDS, s);
-//        return (index >= 0);
         String s1 = s.toLowerCase();
         for (int i = 0; i < DECLARE_WORDS.length; i++) {
             if (s1.equals(DECLARE_WORDS[i])) {
@@ -98,5 +96,16 @@ public class Conjunction {
             }
         }
         return false;
+    }
+    
+    public static int checkConjunction(String s) {
+//        int index = -1;
+        String s1 = s.toLowerCase();
+        for (int i = 0; i < CONJUNCTIONS.length; i++) {
+            if (s1.equals(CONJUNCTIONS[i][0])) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

@@ -1,8 +1,9 @@
+﻿ ﻿
 Tính E
 đến E
 cuối N
 tháng N
-6 2013
+6 2013 M
 , ,
 tín_dụng N
 toàn L
@@ -47,7 +48,7 @@ Nhà_nước N
 vừa R
 ban_hành V
 Chỉ_thị N
-03 CT
+03 CT M
 - -
 NHNN Ny
 về E
@@ -424,12 +425,12 @@ văn_bản N
 số N
 5174 M
 và C
-5175 NHNN
+5175 NHNN M
 - -
 QLNH Ny
 ban_hành V
 ngày N
-18 7
+18 7 M
 , ,
 NHNN Ny
 yêu_cầu V

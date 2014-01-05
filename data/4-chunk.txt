@@ -1,8 +1,9 @@
+﻿	﻿	B-NP
 Tính	E	B-PP
 đến	E	I-PP
 cuối	N	B-NP
 tháng	N	I-NP
-6	2013	I-NP
+6	2013	M	I-NP
 ,	,	O
 tín_dụng	N	B-NP
 toàn	L	I-NP
@@ -47,7 +48,7 @@ Nhà_nước	N	I-NP
 vừa	R	B-VP
 ban_hành	V	I-VP
 Chỉ_thị	N	B-NP
-03	CT	I-NP
+03	CT	M	I-NP
 -	-	I-NP
 NHNN	Ny	I-NP
 về	E	B-PP
@@ -424,12 +425,12 @@ văn_bản	N	I-NP
 số	N	I-NP
 5174	M	I-NP
 và	C	I-NP
-5175	NHNN	I-NP
+5175	NHNN	M	I-NP
 -	-	I-NP
 QLNH	Ny	I-NP
 ban_hành	V	B-VP
 ngày	N	B-NP
-18	7	I-NP
+18	7	M	I-NP
 ,	,	I-NP
 NHNN	Ny	I-NP
 yêu_cầu	V	B-VP

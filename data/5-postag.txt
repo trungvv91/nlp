@@ -1,3 +1,4 @@
+﻿ ﻿
 Theo E
 ông Nc
 Trần_Trọng_Tuấn Np
@@ -20,7 +21,7 @@ triển_khai V
 chi_tiết N
 dự_án N
 chung_cư N
-157 R8
+157 R8 M
 Tô_Hiến_Thành Np
 - -
 dự_án N
@@ -37,7 +38,7 @@ buổi N
 giao_lưu V
 trực_tuyến A
 ngày N
-17 7
+17 7 M
 , ,
 nhiều A
 người N
@@ -78,7 +79,7 @@ nhà_ở N
 xã_hội N
 tại E
 chung_cư N
-157 R8
+157 R8 M
 Tô_Hiến_Thành Np
 được V
 Hội_đồng N
@@ -217,7 +218,7 @@ Theo E
 Trần_Trọng_Tuấn Np
 , ,
 chung_cư N
-157 R8
+157 R8 M
 Tô_Hiến_Thành Np
 có V
 114 M
@@ -451,7 +452,7 @@ Nguyễn_Hoàng_Minh Np
 tính V
 đến E
 ngày N
-15 7
+15 7 M
 đã R
 có V
 19 M

@@ -1,4 +1,5 @@
-Hãng_Panasonic	Np	B-NP
+﻿	﻿	B-NP
+Hãng_Panasonic	Np	I-NP
 của	E	B-PP
 Nhật	Np	B-NP
 cùng_với	E	B-PP
@@ -99,10 +100,10 @@ khoảng	N	B-NP
 thời_gian	N	I-NP
 từ	E	B-PP
 tháng	N	B-NP
-9	2003	I-NP
+9	2003	M	I-NP
 đến	V	B-VP
 tháng	N	B-NP
-2	2010	I-NP
+2	2010	M	I-NP
 ,	,	I-NP
 tập_đoàn	N	I-NP
 của	E	B-PP
@@ -310,9 +311,9 @@ quãng	N	B-NP
 thời_gian	N	I-NP
 từ	E	B-PP
 tháng	N	B-NP
-4	2007	I-NP
+4	2007	M	I-NP
 –	–	I-NP
-9	2008	I-NP
+9	2008	M	I-NP
 .	.	I-NP
 Sanyo	Np	I-NP
 ,	,	I-NP

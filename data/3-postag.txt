@@ -1,3 +1,4 @@
+﻿ ﻿
 Hãng_Panasonic Np
 của E
 Nhật Np
@@ -99,10 +100,10 @@ khoảng N
 thời_gian N
 từ E
 tháng N
-9 2003
+9 2003 M
 đến V
 tháng N
-2 2010
+2 2010 M
 , ,
 tập_đoàn N
 của E
@@ -310,9 +311,9 @@ quãng N
 thời_gian N
 từ E
 tháng N
-4 2007
+4 2007 M
 – –
-9 2008
+9 2008 M
 . .
 Sanyo Np
 , ,
