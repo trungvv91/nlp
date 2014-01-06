@@ -46,7 +46,7 @@ public class WordsGraph {
             values[i] = vertex.get(i).score;
             indices[i] = i;
         }
-        QuickSort.QuickSortFunction(values, indices, 0, n - 1);
+        QuickSort.QuickSort(values, indices, 0, n - 1);
         for (int i = 0; i < numOfWordImportance; i++) {
             int index = indices[i];
             Datum dimp = vertex.get(index);
@@ -61,7 +61,7 @@ public class WordsGraph {
     }
 
     public void mainWordGraph(String inputNum, List<Datum> dts, int wordMax) throws IOException {
-        Synonym.initSynonymMap();
+
         List<Datum> datums = SentenceExtraction.ExtractSentences(inputNum, dts);
 
         //Lay 15% so tu la importance words
@@ -402,11 +402,11 @@ public class WordsGraph {
                     }
                 }
 
-                if ("và".equals(sen.get(eIndex).word) || "hoặc".equals(sen.get(eIndex).word)
-                        || "và ".equals(sen.get(eIndex).word) || "hoặc ".equals(sen.get(eIndex).word)) {
+                if (eIndex > -1 && ("và".equals(sen.get(eIndex).word) || "hoặc".equals(sen.get(eIndex).word)
+                        || "và ".equals(sen.get(eIndex).word) || "hoặc ".equals(sen.get(eIndex).word))) {
                     eIndex--;
                 }
-                if (sen.get(sIndex).word.equals(",") || sen.get(sIndex).word.equals(", ")) {
+                if (sIndex > -1 && (sen.get(sIndex).word.equals(",") || sen.get(sIndex).word.equals(", "))) {
                     sIndex++;
                 }
 
@@ -478,8 +478,8 @@ public class WordsGraph {
         try {
             WordsGraph graph = new WordsGraph();
             VNTagger tagger = VNTagger.getInstance();
-            List<Datum> datums = tagger.tagger("0");
-            graph.mainWordGraph("0", datums, 20);
+            List<Datum> datums = tagger.tagger("6");
+            graph.mainWordGraph("6", datums, 20);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -47,6 +47,7 @@ public class Idf_normalize {
       ";",
       "^"
     };
+    
     public static void main(String[] args) throws IOException{
         // TODO code application logic here
         String file = "train-data/idf_index.txt";
