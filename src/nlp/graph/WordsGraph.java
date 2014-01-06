@@ -5,7 +5,6 @@
 package nlp.graph;
 
 import nlp.sentenceExtraction.Datum;
-import nlp.dict.Synonym;
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ public class WordsGraph {
 
     /**
      * Determine keywords in datums list by set d.importance=true
+     * @param datums
      * @param numOfWordImportance 
      */
     public void setWordImportance(List<Datum> datums, int numOfWordImportance) {
@@ -480,7 +480,7 @@ public class WordsGraph {
             VNTagger tagger = VNTagger.getInstance();
             List<Datum> datums = tagger.tagger("6");
             graph.mainWordGraph("6", datums, 20);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
