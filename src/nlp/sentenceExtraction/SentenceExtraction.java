@@ -164,13 +164,13 @@ public class SentenceExtraction {
             }
             senScore[i] = tf / (double) numOfPhr_i;
         }
-        QuickSort.QuickSortFunction(senScore, senIndex, 0, numOfSen - 1);
-        int remainSen = (int) (2 * numOfSen / 3);
+        QuickSort.QuickSort(senScore, senIndex, 0, numOfSen - 1);
+        int remainSen = (int) (2 * numOfSen / 3) + 1;
         int[] topSenIndex = new int[remainSen];
         int[] topSenIndexTmp = new int[remainSen];
         System.arraycopy(senIndex, 0, topSenIndex, 0, remainSen);
         System.arraycopy(topSenIndex, 0, topSenIndexTmp, 0, remainSen);
-        QuickSort.QuickSortFunction(topSenIndexTmp, 0, remainSen - 1);
+        QuickSort.QuickSort(topSenIndexTmp, 0, remainSen - 1);
         for (int i = 0; i < topSenIndexTmp.length; i++) {
             for (int j = 0; j < topSenIndex.length; j++) {
                 if (topSenIndexTmp[i] == topSenIndex[j]) {
@@ -201,9 +201,11 @@ public class SentenceExtraction {
 //        }
 // </editor-fold>
 
-        // Remove unimportant sentences        
-        for (int i = remainSen; i < senIndex.length; i++) {
-            sentences.remove(senIndex[i] - (i - remainSen));
+        // Remove unimportant sentences 
+        QuickSort.QuickSort(senIndex, remainSen, senIndex.length - 1);
+        for (int i = senIndex.length - 1; i >= remainSen; i--) {
+//            sentences.remove(senIndex[i] - (i - remainSen));
+            sentences.remove(senIndex[i]);
         }
 //        System.out.println(remainSen + " sentences remain");
 
@@ -214,8 +216,8 @@ public class SentenceExtraction {
         VNTagger tagger = VNTagger.getInstance();
         List<Datum> datums = null;
         try {
-            datums = tagger.tagger("0");
-            ExtractSentences("0", datums);
+            datums = tagger.tagger("6");
+            ExtractSentences("6", datums);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

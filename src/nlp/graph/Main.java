@@ -6,6 +6,7 @@ package nlp.graph;
 
 import java.io.*;
 import java.util.List;
+import nlp.dict.Synonym;
 import nlp.sentenceExtraction.Datum;
 import nlp.tool.vnTextPro.VNTagger;
 
@@ -23,6 +24,7 @@ public class Main {
         String file;
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
+        Synonym.initSynonymMap();
 
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {

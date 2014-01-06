@@ -105,51 +105,51 @@ public class QuickSort {
     }
 
     /**
-     * Quick sort
+     * Quick sort array A from left to right
      * @param A - sorting array
      * @param B - index
      * @param left
      * @param right 
      */
-    public static void QuickSortFunction(double A[], int B[], int left, int right) {
+    public static void QuickSort(double A[], int B[], int left, int right) {
         int index = partition(A, B, left, right);
         if (left < index - 1) {
-            QuickSortFunction(A, B, left, index - 1);
+            QuickSort(A, B, left, index - 1);
         }
         if (right > index) {
-            QuickSortFunction(A, B, index, right);
+            QuickSort(A, B, index, right);
         }
     }
 
-    public static void QuickSortFunction(int A[], int B[], int left, int right) {
+    public static void QuickSort(int A[], int B[], int left, int right) {
         int index = partition(A, B, left, right);
         if (left < index - 1) {
-            QuickSortFunction(A, B, left, index - 1);
+            QuickSort(A, B, left, index - 1);
         }
         if (right > index) {
-            QuickSortFunction(A, B, index, right);
+            QuickSort(A, B, index, right);
         }
     }
 
-    public static void QuickSortFunction(double A[], int left, int right) {
+    public static void QuickSort(double A[], int left, int right) {
         int index = partition(A, left, right);
         if (left < index - 1) {
-            QuickSortFunction(A, left, index - 1);
+            QuickSort(A, left, index - 1);
         }
         if (right > index) {
-            QuickSortFunction(A, index, right);
+            QuickSort(A, index, right);
         }
     }
 
-    public static void QuickSortFunction(int A[], int left, int right) {
+    public static void QuickSort(int A[], int left, int right) {
         //test();
         //if(left >= right) return;
         int index = partition(A, left, right);
         if (left < index - 1) {
-            QuickSortFunction(A, left, index - 1);
+            QuickSort(A, left, index - 1);
         }
         if (right > index) {
-            QuickSortFunction(A, index, right);
+            QuickSort(A, index, right);
         }
     }
 
@@ -162,7 +162,7 @@ public class QuickSort {
             B[i] = i;
         }
         System.out.println();
-        QuickSortFunction(A, B, 0, A.length - 1);
+        QuickSort(A, B, 0, A.length - 1);
         for (int i = 0; i < 5; i++) {
             System.out.print(A[i] + " ");
         }
