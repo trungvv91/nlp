@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jvnpostag.CRFTagger;
 import jvnpostag.MaxentTagger;
 import jvnpostag.POSTagger;
@@ -17,6 +19,7 @@ public class VNTagger {
 
     private static VNTagger instance;
     private static POSTagger tagger;
+    private final Stopword stopword = new Stopword();
 
     public static VNTagger getInstance() {
         if (instance == null) {
@@ -54,9 +57,10 @@ public class VNTagger {
 
     /**
      * POS tagging
+     *
      * @param inputNum
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     public List<Datum> tagger(String inputNum) throws IOException {
         String fileNameSource = "corpus/Plaintext/" + inputNum + ".txt";
@@ -71,14 +75,17 @@ public class VNTagger {
 
         String str = "";
         try (BufferedReader br = new BufferedReader(new FileReader(
-                        new File(outputFileToken)))) {
-            String line = "";
+                new File(outputFileToken)))) {
+            String line;
             while ((line = br.readLine()) != null) {
                 str += line.replace(",", " , ").replace(":", " : ").replace("-", " - ").replace(".", " . ").replace(";", " ; ").replace("“", "").replace("”", "").replace("\"", "") + "\n";
             }
         }
         str = str.replace(".  .  .", "...");
-//        System.out.println(str);
+        if ((int) str.charAt(0) == 65279) {
+            str = str.substring(1).trim();
+        }
+//        System.out.println((int) " Khai bao ".charAt(0));
         String strPos = tag(str).trim().replace(" ", "\n").replace("/", " ");
         String outputFileTagger = "data/" + inputNum + "-postag.txt";
         try (FileWriter fw2 = new FileWriter(new File(outputFileTagger))) {
@@ -86,7 +93,8 @@ public class VNTagger {
 //            System.out.println("Print strPos:\n" + strPos);
         }
 
-        /// //Chay command line cua chuong trinh VietChunker
+        /// Chay command line cua chuong trinh VietChunker
+        /// đã có file -postag.txt
         try {
             CmdTest.runCommand(inputNum);
         } catch (Exception e) {
@@ -96,7 +104,7 @@ public class VNTagger {
         String fileName = "data/" + inputNum + "-chunk.txt";        //Input Tagger file
         List<String> lines = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(new File(fileName)))) {
-            String line = "";
+            String line;
             while ((line = br.readLine()) != null) {
                 if (!"".equals(line)) {
                     lines.add(line);    // each line of the form: Vũ_Dư	Np	I-NP
@@ -121,7 +129,7 @@ public class VNTagger {
             }
             d.iPhrase = phrase;
 
-            if (Stopword.checkStopWord(w[0]) && !"Np".equals(d.posTag)) {
+            if (stopword.isStopWord(w[0]) && !"Np".equals(d.posTag)) {
                 d.stopWord = true;
             }
             if (Punctuation.isEndOfSentence(d.word)) {
@@ -172,13 +180,83 @@ public class VNTagger {
 
     public static void main(String[] args) {
         VNTagger ins = VNTagger.getInstance();
-        //String s = ins.tag("Bệnh nhân Vũ Dư dùng thuốc Biseptol.");
-        //System.out.println(s);
-        try {
-            List<Datum> datums = ins.tagger("0");
-            System.out.println(datums.toString());
+        
+        String strTest = "Bệnh nhân Vũ Dư dùng thuốc Biseptol. Anh ấy bị biến chứng nặng.";
+        String fileNameSource = "corpus/Plaintext/test.txt";
+        try (FileWriter fw2 = new FileWriter(new File(fileNameSource))) {
+            fw2.write(strTest);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Logger.getLogger(VNTagger.class.getName()).log(Level.SEVERE, null, ex);
         }
+                
+        String outputFilePre = "data/test-token-temp.txt";
+        VNTokenizer token = VNTokenizer.getInstance();
+        try {
+            VNPreprocessing.preprocess(fileNameSource, outputFilePre);
+        } catch (IOException ex) {
+            Logger.getLogger(VNTagger.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        String outputFileToken = "data/test-token.txt";
+        token.tokenize(outputFilePre, outputFileToken);
+        
+        String str = "";
+        try (BufferedReader br = new BufferedReader(new FileReader(
+                new File(outputFileToken)))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                str += line.replace(",", " , ").replace(":", " : ").replace("-", " - ").replace(".", " . ").replace(";", " ; ").replace("“", "").replace("”", "").replace("\"", "") + "\n";
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(VNTagger.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(VNTagger.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        str = str.replace(".  .  .", "...");
+        if ((int) str.charAt(0) == 65279) {
+            str = str.substring(1).trim();  /// xóa ký tự . ở đầu văn bản
+        }
+        
+        String strPos = ins.tag(str).trim().replace(" ", "\n").replace("/", " ");
+        String outputFileTagger = "data/test-postag.txt";
+        try (FileWriter fw2 = new FileWriter(new File(outputFileTagger))) {
+            fw2.write(strPos);
+        } catch (IOException ex) {
+            Logger.getLogger(VNTagger.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        /// Chay command line cua chuong trinh VietChunker
+        /// đã có file -postag.txt
+        try {
+            CmdTest.runCommand("test");
+        } catch (Exception e) {
+            System.out.println("Can't run VietChunker. Error : " + e);
+        }
+
+        System.out.println("\n");
+        System.out.println(strTest);
+        System.out.println("");
+        String fileName = "data/test-chunk.txt";        // Input Tagger file
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(fileName)))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(VNTagger.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(VNTagger.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        File deleteFile = new File(outputFilePre);
+        deleteFile.delete();
+        deleteFile = new File(fileName);
+        deleteFile.delete();
+        deleteFile = new File(fileNameSource);
+        deleteFile.delete();
+        deleteFile = new File(outputFileToken);
+        deleteFile.delete();
+        deleteFile = new File(outputFileTagger);
+        deleteFile.delete();
     }
 }

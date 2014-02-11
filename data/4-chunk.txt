@@ -1,6 +1,5 @@
-﻿	﻿	B-NP
-Tính	E	B-PP
-đến	E	I-PP
+Tính	Np	B-NP
+đến	E	B-PP
 cuối	N	B-NP
 tháng	N	I-NP
 6	2013	M	I-NP

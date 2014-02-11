@@ -1,5 +1,4 @@
-﻿	﻿	B-NP
-Hãng_Panasonic	Np	I-NP
+Hãng_Panasonic	Np	B-NP
 của	E	B-PP
 Nhật	Np	B-NP
 cùng_với	E	B-PP

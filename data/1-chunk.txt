@@ -1,5 +1,4 @@
-﻿	﻿	B-NP
-Khai_báo	Np	I-NP
+Khai_báo	Np	B-NP
 là	C	B-VP
 xe_máy	N	B-NP
 LX125	M	I-NP

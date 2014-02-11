@@ -26,16 +26,18 @@ public class SentenceExtraction {
      * !!!
      * @param datums 
      */
-    public static void NounAnaphoring(List<Datum> datums) {
+    public void NounAnaphoring(List<Datum> datums) {
+        NounAnaphora na = new NounAnaphora();
+        
         /// Noun Anaphoric 2
         for (int i = 1; i < datums.size();) {
             Datum di = datums.get(i);
             if (di.posTag.equals("Np")) {
-                if (NounAnaphora.checkNounAnophoric2(datums.get(i - 1).word)) {
+                if (na.isNounAnaphora2(datums.get(i - 1).word)) {
                     /// bệnh_nhân Vũ_Dư !!! bệnh_nhân_Vũ_Dư 
                     di.word = datums.get(i - 1).word + " " + di.word;
                     datums.remove(datums.get(i - 1));
-                } else if (i >= 2 && NounAnaphora.checkNounAnophoric2(datums.get(i - 2).word)
+                } else if (i >= 2 && na.isNounAnaphora2(datums.get(i - 2).word)
                         && datums.get(i - 1).word.equals("của")) {
                     /// anh của Dư
                     di.word = datums.get(i - 2).word + " " + datums.get(i - 1).word + " " + di.word;
@@ -56,8 +58,8 @@ public class SentenceExtraction {
             if (di.word.equals(".") || di.word.equals(",")) {
                 /// đó là Dư, anh ấy đang bị ốm
                 if (datums.get(i - 1).posTag.equals("Np")
-                        && (NounAnaphora.checkNounAnophoric1(datums.get(i + 1).word)
-                        || NounAnaphora.checkNounAnophoric1(datums.get(i + 1).word + " " + datums.get(i + 2).word))) {
+                        && (na.isNounAnaphora1(datums.get(i + 1).word)
+                        || na.isNounAnaphora1(datums.get(i + 1).word + " " + datums.get(i + 2).word))) {
                     datums.get(i + 1).word = datums.get(i - 1).word;
                 }
             }
@@ -70,7 +72,7 @@ public class SentenceExtraction {
      * @return
      * @throws IOException 
      */
-    public static void SentenceRedundancing(List<Datum> datums) throws IOException {
+    public void SentenceRedundancing(List<Datum> datums) throws IOException {
         System.out.println("Start of redundancy...");
 
         final double THRESHOLD = 0.7;
@@ -139,12 +141,11 @@ public class SentenceExtraction {
      * @return tagged datums list
      * @throws IOException 
      */
-    public static List<Datum> ExtractSentences(String inputNum, List<Datum> datums) throws IOException {
+    public List<Datum> ExtractSentences(String inputNum, List<Datum> datums) throws IOException {
         ArrayList<ArrayList<Datum>> sentences = DatumUtil.DatumToSentence(datums);
         int numOfSen = sentences.size();
 
 //        NounAnaphoring(datums);
-
 //        SentenceRedundancing(datums);
 
         /// Set mapSenOrderByScore
@@ -214,10 +215,11 @@ public class SentenceExtraction {
 
     public static void main(String[] args) {
         VNTagger tagger = VNTagger.getInstance();
-        List<Datum> datums = null;
+        List<Datum> datums;
         try {
             datums = tagger.tagger("6");
-            ExtractSentences("6", datums);
+            SentenceExtraction se = new SentenceExtraction();
+            se.ExtractSentences("6", datums);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

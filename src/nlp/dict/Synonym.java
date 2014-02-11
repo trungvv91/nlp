@@ -6,6 +6,8 @@ package nlp.dict;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -13,16 +15,17 @@ import java.util.*;
  */
 public class Synonym {
 
-    public static Map<String, String> synonymMap = new HashMap<>();
+    public Map<String, String> synonymMap = new HashMap<>();
+    private final String filename = "train-data/VNsynonym.txt";
 
-    public static boolean checkSynonum(String str) {
-        if (synonymMap.containsKey(str.toLowerCase()) == true) {
+    public boolean isSynonum(String str) {
+        if (synonymMap.containsKey(str.toLowerCase())) {
             return true;
         }
         return false;
     }
 
-    public static String[] synonym(String str) {
+    public String[] getSynonyms(String str) {
         String tmp = synonymMap.get(str.toLowerCase());
         String[] array = tmp.split("\\,");
         return array;
@@ -30,18 +33,23 @@ public class Synonym {
 
     /**
      * Setup synonymMap
-     * @throws IOException 
+     *
+     * @throws IOException
      */
-    public static void initSynonymMap() throws IOException {
-        String input = "train-data/VNsynonym.txt";
-//        String output = "train-data/out.txt";
-        String line = "";
-        BufferedReader br = new BufferedReader(new FileReader(new File(input)));
-        while ((line = br.readLine()) != null) {
-            if (line.contains("::") == false) {
-                String[] tmp = line.split("\\:");
-                synonymMap.put(tmp[0], tmp[1]);
+    public void initSynonymMap() throws IOException {
+        String line;
+        try (BufferedReader br = new BufferedReader(new FileReader(
+                new File(filename)))) {
+            while ((line = br.readLine()) != null) {
+                if (line.contains("::") == false) {
+                    String[] tmp = line.split("\\:");
+                    synonymMap.put(tmp[0], tmp[1]);
+                }
             }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Stopword.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Stopword.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

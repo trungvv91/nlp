@@ -1,4 +1,3 @@
-﻿	﻿	O
 Theo	E	B-PP
 ông	Nc	B-NP
 Trần_Trọng_Tuấn	Np	I-NP

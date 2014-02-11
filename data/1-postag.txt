@@ -1,4 +1,3 @@
-﻿ ﻿
 Khai_báo Np
 là C
 xe_máy N

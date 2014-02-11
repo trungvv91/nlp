@@ -1,5 +1,4 @@
-﻿ ﻿
-Tính E
+Tính Np
 đến E
 cuối N
 tháng N

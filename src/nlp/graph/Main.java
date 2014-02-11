@@ -24,7 +24,8 @@ public class Main {
         String file;
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
-        Synonym.initSynonymMap();
+//        Synonym synonym = new Synonym();
+//        synonym.initSynonymMap();
 
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {

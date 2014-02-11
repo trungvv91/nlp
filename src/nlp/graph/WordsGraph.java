@@ -62,7 +62,8 @@ public class WordsGraph {
 
     public void mainWordGraph(String inputNum, List<Datum> dts, int wordMax) throws IOException {
 
-        List<Datum> datums = SentenceExtraction.ExtractSentences(inputNum, dts);
+        SentenceExtraction se = new SentenceExtraction();
+        List<Datum> datums = se.ExtractSentences(inputNum, dts);
 
         //Lay 15% so tu la importance words
         setWordImportance(datums, datums.size() * 15 / 100);
