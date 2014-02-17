@@ -20,57 +20,13 @@ import nlp.tool.vnTextPro.VNTagger;
 public class SentenceExtraction {
 
     public static Map<Integer, Integer> mapSenOrderByScore = new HashMap<>();
-
-    /// Java manipulates objects by reference, but it passes object references to methods by value
-    /**
-     * !!!
-     * @param datums 
-     */
-    public void NounAnaphoring(List<Datum> datums) {
-        NounAnaphora na = new NounAnaphora();
-        
-        /// Noun Anaphoric 2
-        for (int i = 1; i < datums.size();) {
-            Datum di = datums.get(i);
-            if (di.posTag.equals("Np")) {
-                if (na.isNounAnaphora2(datums.get(i - 1).word)) {
-                    /// bệnh_nhân Vũ_Dư !!! bệnh_nhân_Vũ_Dư 
-                    di.word = datums.get(i - 1).word + " " + di.word;
-                    datums.remove(datums.get(i - 1));
-                } else if (i >= 2 && na.isNounAnaphora2(datums.get(i - 2).word)
-                        && datums.get(i - 1).word.equals("của")) {
-                    /// anh của Dư
-                    di.word = datums.get(i - 2).word + " " + datums.get(i - 1).word + " " + di.word;
-                    datums.remove(datums.get(i - 1));
-                    datums.remove(datums.get(i - 2));
-                    i--;
-                } else {
-                    i++;
-                }
-            } else {
-                i++;
-            }
-        }
-
-        /// Noun Anaphoric 1
-        for (int i = 1; i < datums.size() - 2; i++) {
-            Datum di = datums.get(i);
-            if (di.word.equals(".") || di.word.equals(",")) {
-                /// đó là Dư, anh ấy đang bị ốm
-                if (datums.get(i - 1).posTag.equals("Np")
-                        && (na.isNounAnaphora1(datums.get(i + 1).word)
-                        || na.isNounAnaphora1(datums.get(i + 1).word + " " + datums.get(i + 2).word))) {
-                    datums.get(i + 1).word = datums.get(i - 1).word;
-                }
-            }
-        }
-    }
+    public NounAnaphora na = new NounAnaphora();
 
     /**
      * Eliminate similar sentences !!!
+     *
      * @param datums
-     * @return
-     * @throws IOException 
+     * @throws IOException
      */
     public void SentenceRedundancing(List<Datum> datums) throws IOException {
         System.out.println("Start of redundancy...");
@@ -136,24 +92,24 @@ public class SentenceExtraction {
 
     /**
      * Setup mapSenOrderByScore, keep only 2/3 important sentences
+     *
      * @param inputNum - file name number
      * @param datums
      * @return tagged datums list
-     * @throws IOException 
+     * @throws IOException
      */
-    public List<Datum> ExtractSentences(String inputNum, List<Datum> datums) throws IOException {
-        ArrayList<ArrayList<Datum>> sentences = DatumUtil.DatumToSentence(datums);
+    public ArrayList<Sentence> ExtractSentences(String inputNum, List<Datum> datums) throws IOException {
+        ArrayList<Sentence> sentences = Sentence.DatumToSentence(datums);
         int numOfSen = sentences.size();
 
-//        NounAnaphoring(datums);
+        na.nounAnaphoring(sentences);
 //        SentenceRedundancing(datums);
-
         /// Set mapSenOrderByScore
         System.out.println("Start of sen-scoring");
         double[] senScore = new double[numOfSen];
         int[] senIndex = new int[numOfSen];
         for (int i = 0; i < numOfSen; i++) {
-            ArrayList<Datum> seni = sentences.get(i);
+            ArrayList<Datum> seni = sentences.get(i).dataList;
             int numOfPhr_i = seni.get(seni.size() - 1).iPhrase + 1;
             senScore[i] = 0.0;
             senIndex[i] = i;
@@ -201,7 +157,6 @@ public class SentenceExtraction {
 //            strExtract += "\n";
 //        }
 // </editor-fold>
-
         // Remove unimportant sentences 
         QuickSort.QuickSort(senIndex, remainSen, senIndex.length - 1);
         for (int i = senIndex.length - 1; i >= remainSen; i--) {
@@ -210,7 +165,7 @@ public class SentenceExtraction {
         }
 //        System.out.println(remainSen + " sentences remain");
 
-        return DatumUtil.SentenceToDatum(sentences);
+        return sentences;
     }
 
     public static void main(String[] args) {

@@ -18,6 +18,7 @@ public class Main {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
         String path = "corpus/Plaintext";
@@ -26,10 +27,9 @@ public class Main {
         File[] listOfFiles = folder.listFiles();
 //        Synonym synonym = new Synonym();
 //        synonym.initSynonymMap();
-
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                file = listOfFiles[i].getName();
+        for (File listOfFile : listOfFiles) {
+            if (listOfFile.isFile()) {
+                file = listOfFile.getName();
                 if (file.endsWith(".txt")) {
                     String inputNum = file.split("\\.")[0];
                     try {
@@ -37,7 +37,7 @@ public class Main {
                         VNTagger tagger = VNTagger.getInstance();
                         List<Datum> datums = tagger.tagger(inputNum);
                         graph.mainWordGraph(inputNum, datums, 120);
-                    } catch (Exception e) {
+                    } catch (IOException e) {
                         System.out.println("Error: " + e);
                     }
                 }

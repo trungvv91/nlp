@@ -4,14 +4,14 @@
  */
 package nlp.dict;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nlp.sentenceExtraction.Datum;
+import nlp.sentenceExtraction.Sentence;
+import nlp.tool.vnTextPro.VNTagger;
 
 /**
  *
@@ -86,7 +86,7 @@ public class NounAnaphora {
 //        "bệnh_nhân"
 //    };    
 //    // </editor-fold>
-    
+
 //    public static boolean checkNounAnophoric1(String s)
 //    {               
 ////        int index = Arrays.binarySearch(NA1, s);
@@ -122,9 +122,16 @@ public class NounAnaphora {
 //        words.addAll(Arrays.asList(NA2));
 //        return words;
 //    }
-    
+    /**
+     * "anh + ấy"
+     */
     private final ArrayList<String> listNounAnaphora1;
+
+    /**
+     * "mẹ của Bách"
+     */
     private final ArrayList<String> listNounAnaphora2;
+
     private final String filename1 = "train-data/nounAnaphoric1.txt";
     private final String filename2 = "train-data/nounAnaphoric2.txt";
 
@@ -132,56 +139,96 @@ public class NounAnaphora {
         return listNounAnaphora1;
     }
 
+    public ArrayList<String> getListNounAnaphora2() {
+        return listNounAnaphora2;
+    }
+
     public NounAnaphora() {
-        listNounAnaphora1 = new ArrayList<>();
-        listNounAnaphora2 = new ArrayList<>();
-        String line;
-        try (BufferedReader br = new BufferedReader(new FileReader(
-                new File(filename1)))) {
-            while ((line = br.readLine()) != null) {
-                listNounAnaphora1.add(line);
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Stopword.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Stopword.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        try (BufferedReader br = new BufferedReader(new FileReader(
-                new File(filename2)))) {
-            while ((line = br.readLine()) != null) {
-                listNounAnaphora2.add(line);
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Stopword.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Stopword.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        listNounAnaphora1 = VNTagger.ReadFile(filename1);
+        listNounAnaphora2 = VNTagger.ReadFile(filename2);
     }
-    
+
+    /**
+     * check "anh + ấy"
+     *
+     * @param s
+     * @return
+     */
     public boolean isNounAnaphora1(String s) {
-        String s1 = s.toLowerCase();
+//        String s1 = s.toLowerCase();
         for (String na : listNounAnaphora1) {
-            if (s1.equals(na)) {
+            if (s.equals(na)) {
                 return true;
             }
-        }        
+        }
         return false;
     }
-    
+
+    /**
+     * check "mẹ của Bách"
+     *
+     * @param s
+     * @return
+     */
     public boolean isNounAnaphora2(String s) {
-        String s1 = s.toLowerCase();
+//        String s1 = s.toLowerCase();
         for (String na : listNounAnaphora2) {
-            if (s1.equals(na)) {
+            if (s.equals(na)) {
                 return true;
             }
-        }        
+        }
         return false;
     }
-    
+
+    /// Java manipulates objects by reference, but it passes object references to methods by value
+    /**
+     * Phân giải đồng tham chiếu cho danh từ là chủ ngữ
+     *
+     * @param sentences
+     */
+    public void nounAnaphoring(ArrayList<Sentence> sentences) {
+        /// Noun Anaphoric 1
+        for (int i = 1; i < sentences.size(); i++) {
+            Sentence seni = sentences.get(i);
+            int[] indices = seni.getSubject();
+            for (int j = indices[0]; j <= indices[1]; j++) {
+                if (seni.dataList.get(j).posTag.equals("P")) {
+                    Sentence seni_1 = sentences.get(i - 1);
+                    int[] indices_1 = seni_1.getSubject();
+                    /// anaphoring pronoun
+                    seni.deletePhrase(indices[0], indices[1]);
+                    for (int k = indices_1[1]; k >= indices_1[0]; k--) {
+                        seni.dataList.add(indices[0], seni_1.dataList.get(k));
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) {
 //        System.out.println(NounAnaphora.checkNounAnophoric2("bệnh_nhân"));
         NounAnaphora na = new NounAnaphora();
         System.out.println(na.isNounAnaphora1("ông_ấy"));
+        
+        VNTagger ins = VNTagger.getInstance();
+        String fileNameSource = "corpus/Plaintext/test.txt";
+        String strTest = "Bệnh nhân Vũ Dư dùng thuốc Biseptol. "
+                + "Anh ấy bị biến chứng nặng.";
+//        String strTest = "Bố Bách mua thuốc về cho Bách uống. Sau khi uống, anh ấy bị đỏ môi.";
+        VNTagger.WriteToFile(fileNameSource, strTest);
+
+        List<Datum> datum = null;
+        try {
+            datum = ins.tagger("test");
+        } catch (IOException ex) {
+            Logger.getLogger(VNTagger.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ArrayList<Sentence> sens = Sentence.DatumToSentence(datum);
+        na.nounAnaphoring(sens);
+        System.out.println("\n");
+        System.out.println(strTest);
+        System.out.println("");
+         System.out.println(sens.toString());
     }
 }

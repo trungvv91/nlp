@@ -1,8 +1,8 @@
-﻿anh_của
+anh
 bà
 bác
 bố
-chị_của
+chị
 chú
 cô
 dì
@@ -10,7 +10,3 @@ em
 mẹ
 ông
 thím
-bệnh_nhân
-chủ_tịch
-giám_đốc
-trưởng_phòng

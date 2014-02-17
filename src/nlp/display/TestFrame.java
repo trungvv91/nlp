@@ -68,10 +68,10 @@ public class TestFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        orginalDocumentLable.setFont(new java.awt.Font("Tahoma", 1, 14));
+        orginalDocumentLable.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         orginalDocumentLable.setText("Văn bản ban đầu");
 
-        summaryDocumentLable.setFont(new java.awt.Font("Tahoma", 1, 14));
+        summaryDocumentLable.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         summaryDocumentLable.setText("Văn bản tóm tắt");
 
         summaryButton.setText("Summary");
@@ -83,10 +83,10 @@ public class TestFrame extends javax.swing.JFrame {
 
         sourceTextArea.setMinimumSize(new java.awt.Dimension(450, 550));
         sourceTextArea.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
                 sourceTextAreaInputMethodTextChanged(evt);
-            }
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         sourceTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -131,10 +131,10 @@ public class TestFrame extends javax.swing.JFrame {
             }
         });
 
-        orginalDocumentLable1.setFont(new java.awt.Font("Tahoma", 1, 14));
+        orginalDocumentLable1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         orginalDocumentLable1.setText("từ");
 
-        orginalDocumentLable2.setFont(new java.awt.Font("Tahoma", 1, 14));
+        orginalDocumentLable2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         orginalDocumentLable2.setText("từ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -178,10 +178,10 @@ public class TestFrame extends javax.swing.JFrame {
                         .addComponent(sumNumOfWords, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(orginalDocumentLable1)
                         .addComponent(orginalDocumentLable2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(summaryButton)
                 .addGap(23, 23, 23))
@@ -191,14 +191,12 @@ public class TestFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void summaryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_summaryButtonActionPerformed
-        // TODO add your handling code here:
-        
         if(sourceTextArea.getText()!=null){
             String out = "";
             sumTextArea.setText(null);
             int wordMax = Integer.parseInt(sumNumOfWords.getText());
             try {
-                out = Compute.compute(sourceTextArea.getText(), wordMax);
+                out = Summarization.summarize(sourceTextArea.getText(), wordMax);
             } catch (IOException ex) {
                 Logger.getLogger(TestFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -236,18 +234,12 @@ public class TestFrame extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Window".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TestFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TestFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TestFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(TestFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -255,6 +247,7 @@ public class TestFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 new TestFrame().setVisible(true);
             }

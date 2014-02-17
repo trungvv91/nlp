@@ -1,10 +1,10 @@
-Giáo_viên	Np	B-NP
+bệnh_nhân	N	B-NP
 Vũ_Dư	Np	I-NP
 dùng	V	B-VP
 thuốc	N	B-NP
 Biseptol	Np	I-NP
 .	.	I-NP
-Anh_ấy	Np	I-NP
+anh_ấy	N	I-NP
 bị	V	B-VP
 biến_chứng	V	I-VP
 nặng	A	B-AP

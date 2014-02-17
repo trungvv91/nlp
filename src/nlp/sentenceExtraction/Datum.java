@@ -41,10 +41,12 @@ public class Datum {
         iPhrase = -1;
     }
 
+    @Override
     public String toString() {
-        return word + " " + posTag + " " + chunk + " " + iSentence;
+        return word + " " + posTag + " " + chunk + " " + iPhrase + " " + iSentence + "\n";
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -62,6 +64,7 @@ public class Datum {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int hash = 7;
         hash = 83 * hash + Objects.hashCode(this.word.toLowerCase());

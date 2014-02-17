@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nlp.tool.vnTextPro.VNTagger;
 
 /**
  *
@@ -632,27 +633,13 @@ public class Stopword {
     }
 
     public Stopword() {
-        this.stopwordList = new ArrayList<>();
-        // read txt file
-        String line;
-        try (BufferedReader br = new BufferedReader(new FileReader(
-                new File(filename)))) {
-            while ((line = br.readLine()) != null) {
-                stopwordList.add(line);
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Stopword.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Stopword.class.getName()).log(Level.SEVERE, null, ex);
-        }
-//        System.out.println(stopwordList.size());
-//        Collections.sort(stopwordList);
+        this.stopwordList = VNTagger.ReadFile(filename);
     }
 
     public boolean isStopWord(String s) {
-        String s1 = s.toLowerCase();
+//        String s1 = s.toLowerCase();
         for (String sw : stopwordList) {
-            if (s1.equals(sw)) {
+            if (s.equals(sw)) {
                 return true;
             }
         }

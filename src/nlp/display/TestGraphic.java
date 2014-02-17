@@ -5,7 +5,6 @@
 package nlp.display;
 
 import nlp.sentenceExtraction.IdfScore;
-import nlp.tool.vnTextPro.VNTagger;
 
 /**
  *
@@ -14,13 +13,12 @@ import nlp.tool.vnTextPro.VNTagger;
 public class TestGraphic {
 
     /**
-     * @param args the command line arguments
      */
     public IdfScore idf = new IdfScore();
     public static void main(String[] args) {
         // TODO code application logic here
-        VNTagger tagger = VNTagger.getInstance();
         java.awt.EventQueue.invokeLater(new Runnable(){
+            @Override
             public void run() {
                 TestFrame fr = new TestFrame();
 //                if(fr.)

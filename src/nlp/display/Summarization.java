@@ -14,28 +14,31 @@ import nlp.tool.vnTextPro.VNTagger;
  *
  * @author Manh Tien
  */
-public class Compute {
+public class Summarization {
 
     /**
-     * @param args the command line arguments
+     * @param source
+     * @param wordMax
+     * @return
+     * @throws java.io.IOException
      */
-    public static String compute(String source, int wordMax) throws IOException {
+    public static String summarize(String source, int wordMax) throws IOException {
 //        System.out.println(source);
         String displayFile = "corpus/Plaintext/displayFile.txt";
         String inputNum = "displayFile";
-        FileWriter fr = new FileWriter(new File(displayFile));
-        fr.write(source);
-        fr.close();
+        try (FileWriter fr = new FileWriter(new File(displayFile))) {
+            fr.write(source);
+        }
         WordsGraph graph = new WordsGraph();
         VNTagger tagger = VNTagger.getInstance();
         List<Datum> datums = tagger.tagger(inputNum);
-        try{
+        try {
             graph.mainWordGraph(inputNum, datums, wordMax);
-        }catch(Exception e) {
+        } catch (IOException e) {
             System.out.println("Error: " + e);
         }
         String out = graph.outString;
-        System.out.println(out);
+//        System.out.println(out);
         return out;
     }
 }

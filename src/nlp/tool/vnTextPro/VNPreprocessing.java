@@ -31,16 +31,30 @@ public class VNPreprocessing {
         while ((line = br.readLine()) != null) {
             str += line + "\n";
         }
-        String str2 = str.replaceAll("\\(.+?\\)", "");
+        /// bỏ các phần trong ngoặc đơn
+        str = str.replaceAll("\\(.+?\\)", "");
+
 //        str2 = str2.replace("...", ".");
-        try (FileWriter fw = new FileWriter(new File(outputFile))) {
-            fw.write(str2);
+        /// viết thường các chữ cái đầu câu ???
+        String[] sens = str.split("\\.");
+        str = "";
+        for (int i = 0; i < sens.length - 1; i++) {
+            String s = sens[i].trim();
+            str += Character.toLowerCase(s.charAt(0));
+            str += s.substring(1);
+            str += ". ";
         }
+//
+//        try (FileWriter fw = new FileWriter(new File(outputFile))) {
+//            fw.write(str);
+//        }
+        
+        VNTagger.WriteToFile(outputFile, str);
     }
 
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
-        preprocess("output-data/hihi.txt", "output-data/hehe.txt");
+//        preprocess("output-data/hihi.txt", "output-data/hehe.txt");
     }
 }
 //toi (di (choi)) hay (hoac) di hoc.

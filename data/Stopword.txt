@@ -92,7 +92,8 @@ bởi_vậy
 bởi_vì
 bức
 cả
-cả_thảy     cái
+cả_thảy
+cái
 các
 cả_thảy
 cả_thể
@@ -186,7 +187,8 @@ cũng_vậy
 cũng_vậy_thôi
 cứ
 cứ_việc
-cực_kì     cực_kỳ
+cực_kì
+cực_kỳ
 cực_lực
 cuộc
 cuốn
@@ -280,7 +282,8 @@ như_quả
 như_thể
 như_tuồng
 như_vậy
-nhưng     nhưng_mà
+nhưng
+nhưng_mà
 những
 những_ai
 những_như
@@ -374,7 +377,8 @@ rốt_cục
 rốt_cuộc
 rút_cục
 rứa
-sa_sả     sạch
+sa_sả
+sạch
 sao
 sau_chót
 sau_cùng
@@ -468,7 +472,8 @@ tốc_tả
 tôi
 tối_ư
 tông_tốc
-tột     tràn_cung_mây
+tột
+tràn_cung_mây
 trên
 trển
 trệt

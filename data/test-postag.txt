@@ -1,10 +1,10 @@
-Giáo_viên Np
+bệnh_nhân N
 Vũ_Dư Np
 dùng V
 thuốc N
 Biseptol Np
 . .
-Anh_ấy Np
+anh_ấy N
 bị V
 biến_chứng V
 nặng A

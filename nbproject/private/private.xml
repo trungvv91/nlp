@@ -4,7 +4,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Git/nlp/src/nlp/sentenceExtraction/SentenceRedundancy.java</file>
+            <file>file:/D:/Git/nlp/src/nlp/util/StringUtil.java</file>
+            <file>file:/D:/Git/nlp/src/nlp/tool/vnTextPro/VNPreprocessing.java</file>
+            <file>file:/D:/Git/nlp/src/nlp/dict/Stopword.java</file>
+            <file>file:/D:/Git/nlp/src/nlp/tool/vnTextPro/VNTagger.java</file>
+            <file>file:/D:/Git/nlp/src/nlp/sentenceExtraction/Datum.java</file>
+            <file>file:/D:/Git/nlp/src/nlp/dict/NounAnaphora.java</file>
             <file>file:/D:/Git/nlp/src/nlp/sentenceExtraction/SentenceExtraction.java</file>
         </group>
     </open-files>

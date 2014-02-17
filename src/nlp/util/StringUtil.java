@@ -16,5 +16,5 @@ public class StringUtil {
 		String separatorRegex = "[" + ArrayToString(separator, "") + "]";
 		return str.split(separatorRegex);
 	}
-
+        
 }
